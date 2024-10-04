@@ -23,7 +23,10 @@ public class PepPageNavigationService : PageNavigationService
     {
         try
         {
-            var scope = _container.CreateScope(segmentName);
+            var scope = PepContainerRegistryExtensions.ScopedDependencies.Contains(segmentName)
+                ? _container.CreateScope(segmentName)
+                : _container.CreateScope();
+
             var page = (Page)Registry.CreateView(scope, segmentName);
 
             if (page is null)

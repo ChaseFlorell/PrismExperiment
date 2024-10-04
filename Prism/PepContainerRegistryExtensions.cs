@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace PrismExperiment.Prism;
 
 public static class PepContainerRegistryExtensions
@@ -26,6 +28,9 @@ public static class PepContainerRegistryExtensions
         if (viewModel != null)
             container.Register(viewModel);
 
+        ScopedDependencies.Add(name);
         return container;
     }
+
+    internal static HashSet<string> ScopedDependencies = new();
 }

@@ -1,4 +1,5 @@
-﻿using PrismExperiment.Pages.Alpha;
+﻿using PrismExperiment.Dependencies;
+using PrismExperiment.Pages.Alpha;
 using PrismExperiment.Pages.Alpha.Leaf;
 using PrismExperiment.Pages.Bravo;
 using PrismExperiment.Prism;
@@ -29,8 +30,11 @@ public static class MauiProgram
         .RegisterScoped<IContainerProvider, PepContainerProvider>()
         .RegisterScoped<IScopedProvider, PepContainerProvider>()
         // end custom magic
+        // junk
+        .RegisterScoped<IDummyDependency, DummyDependency>()
+        // end junk
         .RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main)
-        .RegisterForScopedNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha) 
+        .RegisterForScopedNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
         .RegisterForScopedNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
         .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
         .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);

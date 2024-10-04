@@ -10,6 +10,7 @@
     <ContentPage.Content>
         <VerticalStackLayout Margin="16">
             <Label Text="{Binding ScopeName}"/>
+            <Label Text="{Binding InstanceId}" />
             <Button Text="Navigate to Alpha Leaf" Command="{Binding NavigateToLeaf}"/>
         </VerticalStackLayout>
     </ContentPage.Content>

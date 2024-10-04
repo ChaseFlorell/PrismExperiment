@@ -10,6 +10,7 @@
     <ContentPage.Content>
         <VerticalStackLayout Margin="16">
             <Label Text="{Binding ScopeName}" />
+            <Label Text="{Binding InstanceId}" />
         </VerticalStackLayout>
     </ContentPage.Content>
 </base:PageBase>
