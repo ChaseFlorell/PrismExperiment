@@ -2,43 +2,21 @@ using DryIoc;
 
 namespace PrismExperiment.Prism;
 
-public interface IPepContainerProvider : IContainerProvider
-{
-    IScopedProvider CreateScope(string name);
-}
-
 public class PepContainerProvider : IPepContainerProvider, IScopedProvider
 {
-    public PepContainerProvider(IResolverContext scope)
-    {
-        _scope = scope;
-    }
+    public PepContainerProvider(IResolverContext scope) => _scope = scope;
 
     /// <inheritdoc />
-    public object Resolve(Type type)
-    {
-        return _scope.Resolve(type);
-        ;
-    }
+    public object Resolve(Type type) => _scope.Resolve(type);
 
     /// <inheritdoc />
-    public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
-    {
-        return _scope.Resolve(type);
-        ;
-    }
+    public object Resolve(Type type, params (Type Type, object Instance)[] parameters) => _scope.Resolve(type);
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name)
-    {
-        return _scope.Resolve(type, name);
-    }
+    public object Resolve(Type type, string name) => _scope.Resolve(type, name);
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
-    {
-        return _scope.Resolve(type, name);
-    }
+    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) => _scope.Resolve(type, name);
 
     /// <inheritdoc />
     public IScopedProvider CreateScope() => new PepContainerProvider(_scope.OpenScope());
@@ -46,7 +24,7 @@ public class PepContainerProvider : IPepContainerProvider, IScopedProvider
     public IScopedProvider CreateScope(string name) => new PepContainerProvider(_scope.OpenScope(name));
 
     /// <inheritdoc />
-    public IScopedProvider? CurrentScope => this;
+    public IScopedProvider CurrentScope => this;
 
     private IResolverContext? _scope;
 
