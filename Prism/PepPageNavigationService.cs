@@ -24,13 +24,17 @@ public class PepPageNavigationService : PageNavigationService
         try
         {
             var scope = PepContainerRegistryExtensions.ScopedDependencies.Contains(segmentName)
-                ? _container.CreateScope(segmentName)
-                : _container.CreateScope();
+                ? _container.CreateNamedScope(segmentName)
+                : _hasLaunchedOnce
+                    ? _container.CreateFromRecycledScope()
+                    : _container.CreateScope();
 
             var page = (Page)Registry.CreateView(scope, segmentName);
 
             if (page is null)
                 throw new NullReferenceException($"The resolved type for {segmentName} was null. You may be attempting to navigate to a Non-Page type");
+
+            _hasLaunchedOnce = true;
 
             return page;
         }
@@ -66,4 +70,5 @@ public class PepPageNavigationService : PageNavigationService
     }
 
     private readonly IPepContainerProvider _container;
+    private static bool _hasLaunchedOnce;
 }

@@ -2,41 +2,45 @@ using DryIoc;
 
 namespace PrismExperiment.Prism;
 
-public class PepContainerProvider : IPepContainerProvider, IScopedProvider
+public class PepContainerProvider(IResolverContext scope, bool isRecycled = false)
+    : IPepContainerProvider, IScopedProvider
 {
-    public PepContainerProvider(IResolverContext scope) => _scope = scope;
+    internal Guid InstanceId { get; } = Guid.NewGuid();
+    internal bool IsRecycled { get; } = isRecycled;
 
     /// <inheritdoc />
-    public object Resolve(Type type) => _scope.Resolve(type);
+    public object Resolve(Type type) => scope.Resolve(type);
 
     /// <inheritdoc />
-    public object Resolve(Type type, params (Type Type, object Instance)[] parameters) => _scope.Resolve(type);
+    public object Resolve(Type type, params (Type Type, object Instance)[] parameters) => scope.Resolve(type);
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name) => _scope.Resolve(type, name);
+    public object Resolve(Type type, string name) => scope.Resolve(type, name);
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) => _scope.Resolve(type, name);
+    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) => scope.Resolve(type, name);
 
     /// <inheritdoc />
-    public IScopedProvider CreateScope() => new PepContainerProvider(_scope.OpenScope());
+    public IScopedProvider CreateScope() => new PepContainerProvider(scope.OpenScope());
 
-    public IScopedProvider CreateScope(string name) => new PepContainerProvider(_scope.OpenScope(name));
+    /// <inheritdoc />
+    public IScopedProvider CreateNamedScope(string name) => new PepContainerProvider(scope.OpenScope(name));
+
+    /// <inheritdoc />
+    public IScopedProvider CreateFromRecycledScope() => new PepContainerProvider(scope, true);
+
+    /// <inheritdoc />
+    public IScopedProvider CreateChildScope() => new PepContainerProvider(scope.OpenScope());
 
     /// <inheritdoc />
     public IScopedProvider CurrentScope => this;
 
-    private IResolverContext? _scope;
-
     /// <inheritdoc />
     public void Dispose()
     {
-        _scope?.Dispose();
-        _scope = null;
+        // todo: investigate how to not dispose of the scope
+        // _scope.Dispose();
     }
-
-    /// <inheritdoc />
-    public IScopedProvider CreateChildScope() => new PepContainerProvider(_scope.OpenScope());
 
     /// <inheritdoc />
     public bool IsAttached { get; set; }

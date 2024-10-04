@@ -1,4 +1,5 @@
-﻿using PrismExperiment.Dependencies;
+﻿using Prism.Common;
+using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
 using PrismExperiment.Pages.Alpha.Leaf;
 using PrismExperiment.Pages.Bravo;
@@ -29,6 +30,7 @@ public static class MauiProgram
         .RegisterScoped<IPepContainerProvider, PepContainerProvider>()
         .RegisterScoped<IContainerProvider, PepContainerProvider>()
         .RegisterScoped<IScopedProvider, PepContainerProvider>()
+        .RegisterScoped<IPageAccessor, PepPageAccessor>()
         // end custom magic
         // junk
         .RegisterScoped<IDummyDependency, DummyDependency>()
