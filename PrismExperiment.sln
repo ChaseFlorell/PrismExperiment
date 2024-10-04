@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismExperiment", "PrismExperiment.csproj", "{6A596C68-0695-4D0B-AA62-7FAC70853AAD}"
+EndProject
+Global
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A596C68-0695-4D0B-AA62-7FAC70853AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A596C68-0695-4D0B-AA62-7FAC70853AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A596C68-0695-4D0B-AA62-7FAC70853AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A596C68-0695-4D0B-AA62-7FAC70853AAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+EndGlobal
