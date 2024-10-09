@@ -1,0 +1,3 @@
+[submodule "submodules/Prism"]
+	path = submodules/Prism
+	url = git@github.com:PrismLibrary/Prism.git

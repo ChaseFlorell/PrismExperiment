@@ -1,4 +1,7 @@
 using Prism.Common;
+using Prism.Events;
+using Prism.Mvvm;
+using Prism.Navigation;
 
 namespace PrismExperiment.Prism;
 

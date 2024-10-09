@@ -1,5 +1,7 @@
 using System.Windows.Input;
 using DryIoc;
+using Prism.Commands;
+using Prism.Navigation;
 using PrismExperiment.Base;
 using PrismExperiment.Dependencies;
 

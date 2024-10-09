@@ -1,4 +1,6 @@
-﻿using Prism.Common;
+﻿using Prism;
+using Prism.Common;
+using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
 using PrismExperiment.Pages.Alpha.Leaf;
@@ -12,7 +14,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp() => MauiApp
         .CreateBuilder()
         .UseMauiApp<App>()
-        .UsePrism(new PepIocContainerExtension(), ConfigurePrism)
+        .UsePrism(ConfigurePrism)
         .ConfigureFonts(ConfigureFonts)
         .Build();
 
@@ -21,7 +23,7 @@ public static class MauiProgram
         .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 
     private static void ConfigurePrism(PrismAppBuilder builder) => builder
-        .CreateWindow(async navigation => await navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)))
+        .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)))
         .RegisterTypes(RegisterTypes);
 
     private static void RegisterTypes(IContainerRegistry containerRegistry) => containerRegistry

@@ -1,3 +1,5 @@
+using Prism.Navigation;
+
 namespace PrismExperiment.Pages.Alpha;
 
 public partial class AlphaWorkflow

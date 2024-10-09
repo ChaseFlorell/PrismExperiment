@@ -65,7 +65,6 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Core" Version="8.0.91" />
-		<PackageReference Include="Prism.DryIoc.Maui" Version="9.0.537" />
     <PackageReference Include="Nanoid" Version="3.1.0"/>
 	</ItemGroup>
 
@@ -94,6 +93,10 @@
 	<ItemGroup>
 	  <AdditionalFiles Include="Pages\Alpha\Leaf\AlphaLeaf.xaml" />
 	  <AdditionalFiles Include="Pages\Alpha\Leaf\BravoLeaf.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\submodules\Prism\src\Maui\Prism.DryIoc.Maui\Prism.DryIoc.Maui.csproj" />
 	</ItemGroup>
 
 </Project>

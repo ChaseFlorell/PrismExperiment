@@ -1,3 +1,5 @@
+using Prism.Navigation;
+
 namespace PrismExperiment.Base;
 
 public class BaseWorkflowPage : PageBase

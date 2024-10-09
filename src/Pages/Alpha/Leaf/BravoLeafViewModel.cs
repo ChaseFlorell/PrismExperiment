@@ -1,4 +1,5 @@
 using DryIoc;
+using Prism.Navigation;
 using PrismExperiment.Base;
 using PrismExperiment.Dependencies;
 

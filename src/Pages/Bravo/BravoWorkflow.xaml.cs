@@ -1,3 +1,5 @@
+using Prism.Navigation;
+
 namespace PrismExperiment.Pages.Bravo;
 
 public partial class BravoWorkflow
