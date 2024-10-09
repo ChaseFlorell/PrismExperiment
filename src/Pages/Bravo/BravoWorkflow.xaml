@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<base:BaseWorkflowPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:base="clr-namespace:PrismExperiment.Base"
+                       xmlns:vm="clr-namespace:PrismExperiment.Pages.Bravo"
+                       x:Class="PrismExperiment.Pages.Bravo.BravoWorkflow"
+                       Title="Bravo Workflow"
+                       x:DataType="vm:BravoWorkflowViewModel">
+    <ContentPage.Content>
+        <VerticalStackLayout Margin="16">
+            <Label Text="{Binding ScopeName}" />
+            <Label Text="{Binding InstanceId}" />
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</base:BaseWorkflowPage>
