@@ -16,10 +16,8 @@ public class PepPageNavigationService : PageNavigationService
         IWindowManager windowManager,
         IEventAggregator eventAggregator,
         IPageAccessor pageAccessor)
-        : base(container, windowManager, eventAggregator, pageAccessor)
-    {
+        : base(container, windowManager, eventAggregator, pageAccessor) =>
         _container = container;
-    }
 
     /// <inheritdoc />
     protected override Page CreatePage(string segmentName)

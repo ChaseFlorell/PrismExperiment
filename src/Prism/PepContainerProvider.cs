@@ -27,7 +27,7 @@ public class PepContainerProvider(IResolverContext scope, bool isRecycled = fals
     public IScopedProvider CreateNamedScope(string name) => new PepContainerProvider(scope.OpenScope(name));
 
     /// <inheritdoc />
-    public IScopedProvider CreateFromRecycledScope() => new PepContainerProvider(scope, true);
+    public IScopedProvider CreateFromRecycledScope() => new PepContainerProvider(scope.OpenScope(), true);
 
     /// <inheritdoc />
     public IScopedProvider CreateChildScope() => new PepContainerProvider(scope.OpenScope());
