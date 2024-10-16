@@ -27,19 +27,21 @@ public static class MauiProgram
         .RegisterTypes(RegisterTypes);
 
     private static void RegisterTypes(IContainerRegistry containerRegistry) => containerRegistry
-        // custom magic
+        // >> Prism Registrations
         .RegisterScoped<INavigationService, PepPageNavigationService>() // originally scoped
         .RegisterScoped<IContainerProvider, PepContainerProvider>() // originally scoped
         .RegisterScoped<IPageAccessor, PepPageAccessor>() // originally scoped
         .Register<INavigationRegistry, PepNavigationRegistry>() // originally transient
         .RegisterMany(typeof(PepContainerProvider), typeof(IScopedProvider), typeof(IPepContainerProvider)) // originally scoped
-        // end custom magic
-        // junk
+        // << Prism Registrations
+        // >> Dummy Dependencies
         .RegisterScoped<IDummyDependency, DummyDependency>()
-        // end junk
+        // << Dummy Dependencies
+        // >> Navigation
         .RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main)
         .RegisterForScopedNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
         .RegisterForScopedNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
         .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
         .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);
+        // << Navigation
 }
