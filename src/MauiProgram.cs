@@ -28,12 +28,11 @@ public static class MauiProgram
 
     private static void RegisterTypes(IContainerRegistry containerRegistry) => containerRegistry
         // custom magic
-        .Register<INavigationService, PepPageNavigationService>()
-        .RegisterScoped<IPepContainerProvider, PepContainerProvider>()
-        .RegisterScoped<IContainerProvider, PepContainerProvider>()
-        .RegisterScoped<IScopedProvider, PepContainerProvider>()
-        .RegisterScoped<IPageAccessor, PepPageAccessor>()
-        .Register<INavigationRegistry, PepNavigationRegistry>()
+        .RegisterScoped<INavigationService, PepPageNavigationService>() // originally scoped
+        .RegisterScoped<IContainerProvider, PepContainerProvider>() // originally scoped
+        .RegisterScoped<IPageAccessor, PepPageAccessor>() // originally scoped
+        .Register<INavigationRegistry, PepNavigationRegistry>() // originally transient
+        .RegisterMany(typeof(PepContainerProvider), typeof(IScopedProvider), typeof(IPepContainerProvider)) // originally scoped
         // end custom magic
         // junk
         .RegisterScoped<IDummyDependency, DummyDependency>()

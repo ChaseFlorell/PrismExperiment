@@ -5,9 +5,6 @@ using Prism.Navigation;
 
 namespace PrismExperiment.Prism;
 
-/// <summary>
-/// [Scoped] Registered in the container
-/// </summary>
 public class PepPageNavigationService : PageNavigationService
 {
     /// <inheritdoc />
@@ -28,7 +25,7 @@ public class PepPageNavigationService : PageNavigationService
                 ? _container.CreateNamedScope(segmentName)
                 : _hasLaunchedOnce
                     ? _container.CreateFromRecycledScope()
-                    : _container.CreateScope();
+                    : _container.CreateNamedScope(segmentName);
 
             var page = (Page)Registry.CreateView(scope, segmentName);
 
