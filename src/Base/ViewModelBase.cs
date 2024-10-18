@@ -13,7 +13,6 @@ public abstract class ViewModelBase : IInitializeAsync
         _dummyDependency = dummyDependency;
     }
 
-
     public string ScopeName => _resolverContext.CurrentScope?.Name?.ToString() ?? "<No Scope Name>";
     public string InstanceId => _dummyDependency.InstanceId;
 

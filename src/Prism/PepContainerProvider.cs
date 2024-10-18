@@ -9,16 +9,32 @@ public class PepContainerProvider(IResolverContext scope, bool isRecycled = fals
     internal bool IsRecycled { get; } = isRecycled;
 
     /// <inheritdoc />
-    public object Resolve(Type type) => scope.Resolve(type);
+    public object Resolve(Type type)
+    {
+        Console.WriteLine("Resolving {0}", type.Name);
+        return scope.Resolve(type);
+    }
 
     /// <inheritdoc />
-    public object Resolve(Type type, params (Type Type, object Instance)[] parameters) => scope.Resolve(type);
+    public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
+    {
+        Console.WriteLine("Resolving {0}", type.Name);
+        return scope.Resolve(type);
+    }
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name) => scope.Resolve(type, name);
+    public object Resolve(Type type, string name)
+    {
+        Console.WriteLine("Resolving {0}", type.Name);
+        return scope.Resolve(type, name);
+    }
 
     /// <inheritdoc />
-    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) => scope.Resolve(type, name);
+    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
+    {
+        Console.WriteLine("Resolving {0}", type.Name);
+        return scope.Resolve(type, name);
+    }
 
     /// <inheritdoc />
     public IScopedProvider CreateScope() => new PepContainerProvider(scope.OpenScope());
@@ -27,7 +43,7 @@ public class PepContainerProvider(IResolverContext scope, bool isRecycled = fals
     public IScopedProvider CreateNamedScope(string name) => new PepContainerProvider(scope.OpenScope(name));
 
     /// <inheritdoc />
-    public IScopedProvider CreateFromRecycledScope() => new PepContainerProvider(scope, true);
+    public IScopedProvider CreateFromRecycledScope() => new PepContainerProvider(scope.OpenScope(), true);
 
     /// <inheritdoc />
     public IScopedProvider CreateChildScope() => throw new NotImplementedException();
