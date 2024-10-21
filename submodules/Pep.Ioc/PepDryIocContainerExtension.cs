@@ -2,13 +2,13 @@ using DryIoc;
 
 namespace Pep.Ioc;
 
-public class PepIocContainerExtension : IContainerExtension
+public class PepDryIocContainerExtension : IContainerExtension
 {
-    public PepIocContainerExtension()
+    public PepDryIocContainerExtension()
     {
     }
 
-    public PepIocContainerExtension(Rules rules)
+    public PepDryIocContainerExtension(Rules rules)
     {
     }
 
