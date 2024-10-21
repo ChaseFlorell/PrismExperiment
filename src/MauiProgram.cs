@@ -1,11 +1,15 @@
-﻿using DryIoc;
+﻿using System;
+using DryIoc;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+using Pep.Ioc;
 using Prism;
 using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
 using PrismExperiment.Pages.Alpha.Leaf;
 using PrismExperiment.Pages.Bravo;
-using PrismExperiment.Prism;
 
 namespace PrismExperiment;
 
@@ -28,20 +32,13 @@ public static class MauiProgram
 
     private static void RegisterTypes(IContainerRegistry containerRegistry) =>
         containerRegistry
-            // >> Prism Registrations
-            // .RegisterScoped<INavigationService, PepPageNavigationService>() // originally scoped
-            // .RegisterScoped<IContainerProvider, PepContainerProvider>() // originally scoped
-            // .RegisterScoped<IPageAccessor, PepPageAccessor>() // originally scoped
-            // .Register<INavigationRegistry, PepNavigationRegistry>() // originally transient
-            // .RegisterMany(typeof(PepContainerProvider), typeof(IScopedProvider), typeof(IPepContainerProvider)) // originally scoped
-            // << Prism Registrations
             // >> Dummy Dependencies
             .RegisterScoped<IDummyDependency, DummyDependency>()
             // << Dummy Dependencies
             // >> Navigation
             .RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main)
-            .RegisterForScopedNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
-            .RegisterForScopedNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
+            .RegisterForNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
+            .RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
             .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
             .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf)
             // << Navigation

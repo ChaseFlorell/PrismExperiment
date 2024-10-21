@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls;
 using Prism.Navigation;
 
 namespace PrismExperiment.Base;

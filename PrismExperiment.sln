@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.Core", "submodules\Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.Events", "submodules\Prism\src\Prism.Events\Prism.Events.csproj", "{32606201-A4F9-4F64-A0ED-335CE915788A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pep.Ioc", "submodules\Pep.Ioc\Pep.Ioc.csproj", "{319F9727-82BC-41CE-8F4F-995B742A16AA}"
+EndProject
 Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D9D6A4C1-506C-4B86-9E5A-4B64277F85FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{32606201-A4F9-4F64-A0ED-335CE915788A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32606201-A4F9-4F64-A0ED-335CE915788A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32606201-A4F9-4F64-A0ED-335CE915788A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{319F9727-82BC-41CE-8F4F-995B742A16AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{319F9727-82BC-41CE-8F4F-995B742A16AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{319F9727-82BC-41CE-8F4F-995B742A16AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{319F9727-82BC-41CE-8F4F-995B742A16AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,5 +51,6 @@ Global
 		{CBB3D878-AAB9-410F-9527-CF017D0CA14C} = {72E0B51D-2BCB-4D83-B4B4-93C253547823}
 		{89A2473F-7A20-423C-A32A-F78F51E8B625} = {72E0B51D-2BCB-4D83-B4B4-93C253547823}
 		{32606201-A4F9-4F64-A0ED-335CE915788A} = {72E0B51D-2BCB-4D83-B4B4-93C253547823}
+		{319F9727-82BC-41CE-8F4F-995B742A16AA} = {72E0B51D-2BCB-4D83-B4B4-93C253547823}
 	EndGlobalSection
 EndGlobal
