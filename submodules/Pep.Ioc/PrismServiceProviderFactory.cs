@@ -4,7 +4,7 @@ namespace Pep.Ioc;
 
 public class PrismServiceProviderFactory : IServiceProviderFactory<IContainerExtension>
 {
-    public PrismServiceProviderFactory(Action<IContainerExtension> registrationCallback)
+    public PrismServiceProviderFactory(Action<IContainerExtension> act)
     {
     }
 

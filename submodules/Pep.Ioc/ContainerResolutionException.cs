@@ -1,5 +1,3 @@
 namespace Pep.Ioc;
 
-public class ContainerResolutionException : Exception
-{
-}
+public sealed class ContainerResolutionException : Exception;

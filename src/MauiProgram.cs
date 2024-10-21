@@ -3,13 +3,13 @@ using DryIoc;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
-using Pep.Ioc;
 using Prism;
 using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
 using PrismExperiment.Pages.Alpha.Leaf;
 using PrismExperiment.Pages.Bravo;
+using IContainerRegistry = Pep.Ioc.IContainerRegistry;
 
 namespace PrismExperiment;
 
