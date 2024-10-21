@@ -2,9 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Pep.Ioc;
 
-public class PrismServiceProviderFactory : IServiceProviderFactory<IContainerExtension>
+public class PepServiceProviderFactory : IServiceProviderFactory<IContainerExtension>
 {
-    public PrismServiceProviderFactory(Action<IContainerExtension> act)
+    public PepServiceProviderFactory(Action<IContainerExtension> act)
     {
     }
 
