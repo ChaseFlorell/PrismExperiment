@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<base:BaseWorkflowPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:base="clr-namespace:PrismExperiment.Base"
+                       xmlns:vm="clr-namespace:PrismExperiment.Pages.Alpha"
+                       x:Class="PrismExperiment.Pages.Alpha.AlphaWorkflow"
+                       Title="Alpha Workflow" 
+                       x:DataType="vm:AlphaWorkflowViewModel">
+    <ContentPage.Content>
+        <VerticalStackLayout Margin="16">
+            <Label Text="{Binding ScopeName}"/>
+            <Label Text="{Binding InstanceId}" />
+            <Button Text="Navigate to Alpha Leaf" Command="{Binding NavigateToLeaf}"/>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</base:BaseWorkflowPage>
