@@ -1,6 +1,8 @@
 ﻿using DryIoc;
 using Microsoft.Maui.LifecycleEvents;
 using Prism;
+using Prism.Controls;
+using Prism.Mvvm;
 using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
@@ -24,8 +26,8 @@ public static class MauiProgram
         .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 
     private static void ConfigurePrism(PrismAppBuilder builder) => builder
-        .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)))
-        .RegisterTypes(RegisterTypes);
+        .RegisterTypes(RegisterTypes)
+        .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)).ContinueWith(task => task.HandleFailedNavigationResult()));
 
     private static void RegisterTypes(Pep.Ioc.IContainerRegistry containerRegistry)
     {
@@ -40,6 +42,13 @@ public static class MauiProgram
             .RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
             .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
             .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);
+            // .Register<PrismNavigationPage>(() => new PrismNavigationPage())
+            // .RegisterInstance(new ViewRegistration
+            // {
+            //     Name = nameof(NavigationPage),
+            //     View = typeof(PrismNavigationPage),
+            //     Type = ViewType.Page
+            // });
         // << Navigation
         ((Pep.Ioc.IContainerExtension<IContainer>)containerRegistry)
             .GetContainer()

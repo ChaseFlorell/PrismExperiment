@@ -1,3 +1,5 @@
+using Prism.Navigation;
+
 namespace PrismExperiment;
 
 internal static class NavigationUrl
@@ -8,4 +10,18 @@ internal static class NavigationUrl
     public static string Bravo => nameof(Bravo);
     public static string AlphaLeaf => nameof(AlphaLeaf);
     public static string BravoLeaf => nameof(BravoLeaf);
+}
+
+internal static class NavigationUrlExtensions
+{
+    public static INavigationResult HandleFailedNavigationResult(this Task<INavigationResult> navigationResult)
+    {
+        if (!navigationResult.Result.Success)
+        {
+            Console.WriteLine(navigationResult.Result.Exception);
+        }
+
+        return navigationResult.Result;
+    }
+
 }

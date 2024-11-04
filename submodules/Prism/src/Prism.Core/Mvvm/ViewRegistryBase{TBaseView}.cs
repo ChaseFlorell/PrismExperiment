@@ -14,7 +14,7 @@ namespace Prism.Mvvm;
 public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     where TBaseView : class
 {
-    private readonly IEnumerable<ViewRegistration> _registrations;
+    private readonly List<ViewRegistration> _registrations;
     private readonly ViewType _registryType;
 
     /// <summary>
@@ -24,7 +24,7 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     /// <param name="registrations">The collection of view registrations.</param>
     protected ViewRegistryBase(ViewType registryType, IEnumerable<ViewRegistration> registrations)
     {
-        _registrations = registrations;
+        _registrations = registrations.ToList();
         _registryType = registryType;
     }
 

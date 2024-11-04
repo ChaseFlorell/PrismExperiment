@@ -234,7 +234,7 @@ public sealed class PrismAppBuilder
         if (!navRegistry.IsRegistered(nameof(NavigationPage)))
         {
             ((IContainerRegistry)_container)
-                .Register(() => new PrismNavigationPage())
+                .Register<PrismNavigationPage>(() => new PrismNavigationPage())
                 .RegisterInstance(new ViewRegistration
                 {
                     Name = nameof(NavigationPage),

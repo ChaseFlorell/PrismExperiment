@@ -8,8 +8,12 @@ namespace Pep.Ioc
     {
         private readonly IResolverContext _resolverContext;
         private readonly IContainer _container;
+        private static readonly Rules __containerRules =
+            Rules.Default
+                .WithAutoConcreteTypeResolution()
+                .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments));
 
-        public PepDryIocContainerExtension() : this(Rules.Default)
+        public PepDryIocContainerExtension() : this(__containerRules)
         {
         }
 
@@ -29,10 +33,12 @@ namespace Pep.Ioc
             {
                 _container.RegisterInstance<IContainerProvider>(this);
             }
+
+            Console.WriteLine("Container Hashcode: {0}", _container.GetHashCode());
         }
 
         /// <inheritdoc />
-        public object Resolve(Type type) => _container.Resolve(type);
+        public object Resolve(Type type) => _resolverContext.Resolve(type);
 
         /// <inheritdoc />
         public T Resolve<T>() => _resolverContext.Resolve<T>();
@@ -60,6 +66,8 @@ namespace Pep.Ioc
 
         /// <inheritdoc />
         public bool IsRegistered<T>() => _container.IsRegistered<T>();
+
+        public IContainer ContainerGrabBag() => _container;
 
         /// <inheritdoc />
         public IContainerRegistry RegisterInstance<TService>(TService instance)
@@ -99,7 +107,7 @@ namespace Pep.Ioc
         /// <inheritdoc />
         public IContainerRegistry TryRegister<TService, TImplementation>() where TImplementation : TService
         {
-            _container.Register<TService, TImplementation>();
+            _container.Register<TService, TImplementation>(reuse: Reuse.Transient);
             return this;
         }
 
