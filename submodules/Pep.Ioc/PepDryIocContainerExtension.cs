@@ -6,12 +6,14 @@ namespace Pep.Ioc
 {
     public class PepDryIocContainerExtension : IContainerExtension<IContainer>
     {
-        private readonly IResolverContext _resolverContext;
+        private IResolverContext? _resolverContext;
         private readonly IContainer _container;
         private static readonly Rules __containerRules =
             Rules.Default
                 .WithAutoConcreteTypeResolution()
                 .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments));
+
+        private IResolverContext TheeContext => _resolverContext ?? _container.OpenScope();
 
         public PepDryIocContainerExtension() : this(__containerRules)
         {
@@ -21,11 +23,11 @@ namespace Pep.Ioc
         {
         }
 
-        public PepDryIocContainerExtension(IContainer container) : this(container, container)
+        public PepDryIocContainerExtension(IContainer container) : this(container, null)
         {
         }
 
-        private PepDryIocContainerExtension(IContainer container, IResolverContext resolverContext)
+        private PepDryIocContainerExtension(IContainer container, IResolverContext? resolverContext)
         {;
             _container = container;
             _resolverContext = resolverContext;
@@ -38,10 +40,10 @@ namespace Pep.Ioc
         }
 
         /// <inheritdoc />
-        public object Resolve(Type type) => _resolverContext.Resolve(type);
+        public object Resolve(Type type) => TheeContext.Resolve(type);
 
         /// <inheritdoc />
-        public T Resolve<T>() => _resolverContext.Resolve<T>();
+        public T Resolve<T>() => TheeContext.Resolve<T>();
 
         /// <inheritdoc />
         public object Resolve(Type type, params (Type, object Instance)[] parameters)
@@ -50,7 +52,7 @@ namespace Pep.Ioc
             {
                 List<object> list = ((IEnumerable<(Type, object)>)parameters).Where<(Type, object)>((Func<(Type, object), bool>)(x => !(x is IContainerProvider))).Select<(Type, object), object>((Func<(Type, object), object>)(x => x)).ToList<object>();
                 list.Add((object)this);
-                return _container.Resolve(type, list.ToArray(), IfUnresolved.Throw, (Type)null, (object)null);
+                return TheeContext.Resolve(type, list.ToArray(), IfUnresolved.Throw, (Type)null, (object)null);
             }
             catch (Exception ex)
             {
@@ -61,6 +63,7 @@ namespace Pep.Ioc
         /// <inheritdoc />
         public IContainerProvider CreateScope(string name)
         {
+            _resolverContext ??= _container;
             return new PepDryIocContainerExtension(_container, _resolverContext.OpenScope(name)); // note: there is also a "CreateScope()" method that we should look at
         }
 

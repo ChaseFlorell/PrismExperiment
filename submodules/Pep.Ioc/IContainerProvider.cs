@@ -1,5 +1,3 @@
-using DryIoc;
-
 namespace Pep.Ioc;
 
 public interface IContainerProvider
@@ -9,5 +7,4 @@ public interface IContainerProvider
     object Resolve(Type type, params (Type, object Instance)[] valueTuple);
     IContainerProvider CreateScope(string name);
     bool IsRegistered<T>();
-    IContainer ContainerGrabBag();
 }

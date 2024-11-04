@@ -27,7 +27,7 @@ public static class MauiProgram
 
     private static void ConfigurePrism(PrismAppBuilder builder) => builder
         .RegisterTypes(RegisterTypes)
-        .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)).ContinueWith(task => task.HandleFailedNavigationResult()));
+        .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)).HandleNavigation());
 
     private static void RegisterTypes(Pep.Ioc.IContainerRegistry containerRegistry)
     {
@@ -41,14 +41,14 @@ public static class MauiProgram
             .RegisterForNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
             .RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
             .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
-            .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);
-            // .Register<PrismNavigationPage>(() => new PrismNavigationPage())
-            // .RegisterInstance(new ViewRegistration
-            // {
-            //     Name = nameof(NavigationPage),
-            //     View = typeof(PrismNavigationPage),
-            //     Type = ViewType.Page
-            // });
+            .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf)
+            .Register<PrismNavigationPage>(() => new PrismNavigationPage())
+            .RegisterInstance(new ViewRegistration
+            {
+                Name = nameof(NavigationPage),
+                View = typeof(PrismNavigationPage),
+                Type = ViewType.Page
+            });
         // << Navigation
         ((Pep.Ioc.IContainerExtension<IContainer>)containerRegistry)
             .GetContainer()

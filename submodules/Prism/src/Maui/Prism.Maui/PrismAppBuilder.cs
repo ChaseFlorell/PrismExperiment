@@ -231,22 +231,20 @@ public sealed class PrismAppBuilder
             logger.LogDebug("No Modules found to initialize.");
         }
 
-        var containerGrabBag = _container.ContainerGrabBag();
-        Console.WriteLine("Container Hashcode: {0}", containerGrabBag.GetHashCode());
-        Console.WriteLine("Current Scope Name: {0}", containerGrabBag.CurrentScope?.Name ?? "No Scope");
         var navRegistry = _container.Resolve<INavigationRegistry>();
         if (!navRegistry.IsRegistered(nameof(NavigationPage)))
         {
-            containerGrabBag
-                .RegisterDelegate<PrismNavigationPage>(() => new PrismNavigationPage());
-
-            containerGrabBag
+            var container = (IContainerRegistry) _container;
+            container
+                .Register(() => new PrismNavigationPage())
                 .RegisterInstance(new ViewRegistration
                 {
                     Name = nameof(NavigationPage),
                     View = typeof(PrismNavigationPage),
                     Type = ViewType.Page
                 });
+
+            var registrations = _container.Resolve<IEnumerable<ViewRegistration>>().ToList();
         }
 
         if (!navRegistry.IsRegistered(nameof(TabbedPage)))

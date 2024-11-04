@@ -68,8 +68,6 @@ public class PageNavigationService : INavigationService, IRegistryAware
         _windowManager = windowManager;
         _eventAggregator = eventAggregator;
         _pageAccessor = pageAccessor;
-
-        Console.WriteLine("Navigation Service Container Hashcode: {0}", _container.ContainerGrabBag().GetHashCode());
     }
 
     /// <summary>
@@ -876,6 +874,7 @@ public class PageNavigationService : INavigationService, IRegistryAware
                     Console.WriteLine(viewRegistration.Name);
                 }
             }
+
             var scope = _container.CreateScope(segmentName);
             var page = (Page)Registry.CreateView(scope, segmentName);
 
