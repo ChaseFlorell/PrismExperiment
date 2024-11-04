@@ -21,7 +21,7 @@ namespace Pep.Ioc
         {
         }
 
-        public PepDryIocContainerExtension(IContainer container) : this(container, container.OpenScope("root"))
+        public PepDryIocContainerExtension(IContainer container) : this(container, container)
         {
         }
 

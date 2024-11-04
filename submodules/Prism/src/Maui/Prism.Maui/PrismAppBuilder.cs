@@ -1,3 +1,4 @@
+using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
@@ -230,11 +231,16 @@ public sealed class PrismAppBuilder
             logger.LogDebug("No Modules found to initialize.");
         }
 
+        var containerGrabBag = _container.ContainerGrabBag();
+        Console.WriteLine("Container Hashcode: {0}", containerGrabBag.GetHashCode());
+        Console.WriteLine("Current Scope Name: {0}", containerGrabBag.CurrentScope?.Name ?? "No Scope");
         var navRegistry = _container.Resolve<INavigationRegistry>();
         if (!navRegistry.IsRegistered(nameof(NavigationPage)))
         {
-            ((IContainerRegistry)_container)
-                .Register<PrismNavigationPage>(() => new PrismNavigationPage())
+            containerGrabBag
+                .RegisterDelegate<PrismNavigationPage>(() => new PrismNavigationPage());
+
+            containerGrabBag
                 .RegisterInstance(new ViewRegistration
                 {
                     Name = nameof(NavigationPage),
