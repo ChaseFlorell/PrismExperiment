@@ -6,26 +6,11 @@ namespace Pep.Ioc
 {
     public class PepDryIocContainerExtension : IContainerExtension<IContainer>
     {
-        private IResolverContext? _resolverContext;
-        private readonly IContainer _container;
-        private static readonly Rules __containerRules =
-            Rules.Default
-                .WithAutoConcreteTypeResolution()
-                .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments));
-
         private IResolverContext TheeContext => _resolverContext ?? _container.OpenScope();
 
-        public PepDryIocContainerExtension() : this(__containerRules)
-        {
-        }
-
-        public PepDryIocContainerExtension(Rules rules) : this(new Container(rules))
-        {
-        }
-
-        public PepDryIocContainerExtension(IContainer container) : this(container, null)
-        {
-        }
+        public PepDryIocContainerExtension() : this(__containerRules) { }
+        public PepDryIocContainerExtension(Rules rules) : this(new Container(rules)) { }
+        public PepDryIocContainerExtension(IContainer container) : this(container, null) { }
 
         private PepDryIocContainerExtension(IContainer container, IResolverContext? resolverContext)
         {;
@@ -64,7 +49,8 @@ namespace Pep.Ioc
         public IContainerProvider CreateScope(string name)
         {
             _resolverContext ??= _container;
-            return new PepDryIocContainerExtension(_container, _resolverContext.OpenScope(name)); // note: there is also a "CreateScope()" method that we should look at
+            var newScope = _resolverContext.OpenScope(name);
+            return new PepDryIocContainerExtension(_container, newScope); // note: there is also a "CreateScope()" method that we should look at
         }
 
         /// <inheritdoc />
@@ -194,5 +180,12 @@ namespace Pep.Ioc
             ServiceRegistrationInfo registrationInfo = _container.GetServiceRegistrations().Where<ServiceRegistrationInfo>((Func<ServiceRegistrationInfo, bool>)(x => x.ServiceType == serviceType)).FirstOrDefault<ServiceRegistrationInfo>();
             return (object)registrationInfo.ServiceType != null ? registrationInfo.ImplementationType : (Type)null;
         }
+
+        private IResolverContext? _resolverContext;
+        private readonly IContainer _container;
+        private static readonly Rules __containerRules =
+            Rules.Default
+                .WithAutoConcreteTypeResolution()
+                .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments));
     }
 }
