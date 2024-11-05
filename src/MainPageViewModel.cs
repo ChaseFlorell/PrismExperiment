@@ -10,11 +10,11 @@ namespace PrismExperiment;
 public class MainPageViewModel : ViewModelBase
 {
     /// <inheritdoc />
-    public MainPageViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(navigationService, resolverContext, dummyDependency)
+    public MainPageViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(resolverContext, dummyDependency)
     {
-        NavigationParameters WorkflowParameters() => new() { { KnownNavigationParameters.UseModalNavigation, true } };
-        NavigateToAlpha = new AsyncDelegateCommand(() => navigationService.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Alpha), WorkflowParameters()));
-        NavigateToBravo = new AsyncDelegateCommand(() => navigationService.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Bravo), WorkflowParameters()));
+        NavigationParameters workflowParameters = new() { { KnownNavigationParameters.UseModalNavigation, true } };
+        NavigateToAlpha = new AsyncDelegateCommand(() => navigationService.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Alpha), workflowParameters));
+        NavigateToBravo = new AsyncDelegateCommand(() => navigationService.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Bravo), workflowParameters));
     }
 
     public ICommand NavigateToBravo { get; }

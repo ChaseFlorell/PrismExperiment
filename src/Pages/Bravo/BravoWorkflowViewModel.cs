@@ -8,7 +8,7 @@ namespace PrismExperiment.Pages.Bravo;
 public class BravoWorkflowViewModel : ViewModelBase
 {
     /// <inheritdoc />
-    public BravoWorkflowViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(navigationService, resolverContext, dummyDependency)
+    public BravoWorkflowViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(resolverContext, dummyDependency)
     {
     }
 }

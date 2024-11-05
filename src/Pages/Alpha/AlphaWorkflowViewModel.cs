@@ -10,7 +10,7 @@ namespace PrismExperiment.Pages.Alpha;
 public class AlphaWorkflowViewModel : ViewModelBase
 {
     /// <inheritdoc />
-    public AlphaWorkflowViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(navigationService, resolverContext, dummyDependency)
+    public AlphaWorkflowViewModel(INavigationService navigationService, IResolverContext resolverContext, IDummyDependency dummyDependency) : base(resolverContext, dummyDependency)
     {
         NavigateToLeaf = new AsyncDelegateCommand(() => navigationService.NavigateAsync(NavigationUrl.AlphaLeaf));
     }
