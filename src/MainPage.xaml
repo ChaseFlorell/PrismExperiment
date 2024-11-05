@@ -7,7 +7,8 @@
              x:DataType="vm:MainPageViewModel">
     <ScrollView>
         <VerticalStackLayout Margin="16" Spacing="8">
-            <Label Text="{Binding ScopeName}" />
+            <Label Text="{Binding ScopeName, StringFormat='Scope: {0}'}" />
+            <Label Text="{Binding ParentScopeName, StringFormat='Parent Scope: {0}'}" />
             <Label Text="{Binding InstanceId}" />
             <Button Command="{Binding NavigateToAlpha}" Text="Navigate To Alpha" />
             <Button Command="{Binding NavigateToBravo}" Text="Navigate To Bravo" />

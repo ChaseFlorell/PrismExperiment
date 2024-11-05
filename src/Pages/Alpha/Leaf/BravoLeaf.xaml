@@ -9,7 +9,8 @@
                x:DataType="vm:BravoLeafViewModel">
     <ContentPage.Content>
         <VerticalStackLayout Margin="16">
-            <Label Text="{Binding ScopeName}" />
+            <Label Text="{Binding ScopeName, StringFormat='Scope: {0}'}"/>
+            <Label Text="{Binding ParentScopeName, StringFormat='Parent Scope: {0}'}"/>
             <Label Text="{Binding InstanceId}" />
         </VerticalStackLayout>
     </ContentPage.Content>
