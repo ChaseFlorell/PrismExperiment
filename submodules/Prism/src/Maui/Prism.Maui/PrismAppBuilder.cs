@@ -1,4 +1,3 @@
-using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
@@ -57,56 +56,6 @@ public sealed class PrismAppBuilder
         IDialogContainer.DialogStack.Clear();
         MauiBuilder = builder;
         MauiBuilder.ConfigureContainer(new PepServiceProviderFactory(RegistrationCallback, containerExtension));
-        MauiBuilder.ConfigureLifecycleEvents(lifecycle =>
-        {
-#if ANDROID
-            lifecycle.AddAndroid(android =>
-            {
-                android.OnBackPressed(activity =>
-                {
-                    //the PrismWindow and PrismNavigationPage have their own back press logic and intercepts the hardware back button behavior
-                    //when this happens the PageNavigationService will take over and handle the navigation and decides whether to allow GoBack or not
-                    //this means we need to check if the PageNavigationService is handling the navigation and if it is, we need to prevent the OnBackPressed logic
-                    if (PageNavigationService.NavigationSource == PageNavigationSource.NavigationService)
-                        return true;
-
-                    throw new ContainerLocatorMisuseException();
-                    
-                    Pep.Ioc.IContainerProvider root = null; //ContainerLocator.Container;
-                    if (root is null)
-                        return false;
-
-                    var app = root.Resolve<IApplication>();
-                    var window = app.Windows.OfType<PrismWindow>()
-                        .FirstOrDefault(x => x.IsActive);
-
-                    if (window is null)
-                        return false;
-
-                    //we are on the root page and the user pressed the hardward back button. the app has nowhere to navigation except to the background.
-                    //neither the PrismNavigationPage or the PrismWindow can handle this scenario, so we need to handle it here
-                    if (window.IsRootPage)
-                    {
-                        //when showing a dialog on the root page, if the user presses the hardware back button, we need to make sure the dialog
-                        //decides either to dismiss the dialog or keep it open
-                        var dialogModal = IDialogContainer.DialogStack.LastOrDefault();
-                        if (dialogModal is not null)
-                        {
-                            return true;
-                        }
-
-                        //note: if the PageNavigationService sends the android app to the background, this can cause the CanNavigate to be called twice.
-                        //if this becomes a problem, we may need to add an additional static flag to know when we are sending the app to the background to prevent the double call
-                        var canNavigate = MvvmHelpers.CanNavigate(MvvmHelpers.GetTarget(window.Page), new NavigationParameters());
-                        return !canNavigate;                        
-                    }
-
-                    return true;
-                    
-                });
-            });
-#endif
-        });
 
         //ContainerLocator.ResetContainer();
         //ContainerLocator.SetContainerExtension(containerExtension);
@@ -234,7 +183,7 @@ public sealed class PrismAppBuilder
         var navRegistry = _container.Resolve<INavigationRegistry>();
         if (!navRegistry.IsRegistered(nameof(NavigationPage)))
         {
-            var container = (IContainerRegistry) _container;
+            var container = (IContainerRegistry)_container;
             container
                 .Register(() => new PrismNavigationPage())
                 .RegisterInstance(new ViewRegistration
@@ -332,7 +281,7 @@ public sealed class PrismAppBuilder
         containerRegistry.TryRegisterScoped<IDialogService, DialogService>();
         containerRegistry.TryRegister<IDialogViewRegistry, DialogViewRegistry>();
         containerRegistry.RegisterDialogContainer<DialogContainerPage>();
-        //containerRegistry.RegisterSingleton<IDeviceService, DeviceService>();
+        // containerRegistry.RegisterSingleton<IDeviceService, DeviceService>();
         containerRegistry.TryRegisterScoped<IPageAccessor, PageAccessor>();
         containerRegistry.TryRegisterScoped<INavigationService, PageNavigationService>();
         containerRegistry.TryRegister<INavigationRegistry, NavigationRegistry>();
