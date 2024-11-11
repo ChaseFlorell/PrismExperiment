@@ -21,7 +21,7 @@ namespace Pep.Ioc
         private PepDryIocContainerExtension(IContainer container, IResolverContext? resolverContext)
         {
             _container = container;
-            _currentScope = resolverContext ?? container.OpenScope("root", true);
+            _resolutionContext = resolverContext ?? container.OpenScope("root", true);
             if (!_container.IsRegistered<IContainerProvider>())
             {
                 _container.RegisterDelegate<IContainerProvider>(() => this);
@@ -31,10 +31,10 @@ namespace Pep.Ioc
         }
 
         /// <inheritdoc />
-        public object Resolve(Type type) => _currentScope.Resolve(type);
+        public object Resolve(Type type) => _resolutionContext.Resolve(type);
 
         /// <inheritdoc />
-        public T Resolve<T>() => _currentScope.Resolve<T>();
+        public T Resolve<T>() => _resolutionContext.Resolve<T>();
 
         /// <inheritdoc />
         public object Resolve(Type type, params (Type, object Instance)[] parameters)
@@ -43,7 +43,7 @@ namespace Pep.Ioc
             {
                 List<object> list = ((IEnumerable<(Type, object)>)parameters).Where<(Type, object)>((Func<(Type, object), bool>)(x => !(x is IContainerProvider))).Select<(Type, object), object>((Func<(Type, object), object>)(x => x)).ToList<object>();
                 list.Add((object)this);
-                return _currentScope.Resolve(type, list.ToArray(), IfUnresolved.Throw, (Type)null, (object)null);
+                return _resolutionContext.Resolve(type, list.ToArray(), IfUnresolved.Throw, (Type)null, (object)null);
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace Pep.Ioc
         /// <inheritdoc />
         public IContainerProvider CreateScope(string name)
         {
-            var newScope = _currentScope.OpenScope(name, true);
+            var newScope = _resolutionContext.OpenScope(name, true);
             var pepDryIocContainerExtension = new PepDryIocContainerExtension(_container, newScope);
             newScope.Use<IContainerProvider>(pepDryIocContainerExtension);
             return pepDryIocContainerExtension;
@@ -62,8 +62,6 @@ namespace Pep.Ioc
 
         /// <inheritdoc />
         public bool IsRegistered<T>() => _container.IsRegistered<T>();
-
-        public IContainer ContainerGrabBag() => _container;
 
         /// <inheritdoc />
         public IContainerRegistry RegisterInstance<TService>(TService instance)
@@ -188,7 +186,7 @@ namespace Pep.Ioc
             return (object)registrationInfo.ServiceType != null ? registrationInfo.ImplementationType : (Type)null;
         }
 
-        private readonly IResolverContext _currentScope;
+        private readonly IResolverContext _resolutionContext;
         private readonly IContainer _container;
 
         private static readonly Rules __containerRules =
