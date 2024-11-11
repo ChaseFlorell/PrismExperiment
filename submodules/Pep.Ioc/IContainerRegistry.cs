@@ -9,6 +9,7 @@ public interface IContainerRegistry
     IContainerRegistry RegisterInstance<TService>(TService instance);
     IContainerRegistry RegisterManySingleton<TImplementation>();
     IContainerRegistry RegisterScoped<TService, TImplementation>() where TImplementation : TService;
+    IContainerRegistry RegisterScoped(Type type);
     IContainerRegistry RegisterScoped<TService>(Func<IContainerProvider, TService> func);
     IContainerRegistry RegisterSingleton<TService, TImplementation>() where TImplementation : TService;
     IContainerRegistry RegisterSingleton<TService>(Func<IContainerProvider, TService> func);

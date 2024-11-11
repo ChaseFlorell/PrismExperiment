@@ -47,7 +47,8 @@ internal class NavigationRegistry : ViewRegistryBase, INavigationRegistry
             }
         }
 
-        if (page.GetContainerProvider() is null)
+        var containerProvider = page.GetContainerProvider();
+        if (containerProvider is null)
             page.SetContainerProvider(container);
 
         var accessor = container.Resolve<IPageAccessor>();

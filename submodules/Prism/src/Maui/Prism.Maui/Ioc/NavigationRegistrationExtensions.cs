@@ -13,7 +13,11 @@ public static class NavigationRegistrationExtensions
         where TView : Page =>
         container.RegisterForNavigation(typeof(TView), typeof(TViewModel), name);
 
-    public static Pep.Ioc.IContainerRegistry RegisterForNavigation(this Pep.Ioc.IContainerRegistry container, Type view, Type viewModel, string name = null)
+    public static Pep.Ioc.IContainerRegistry RegisterForScopedNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TViewModel>(this Pep.Ioc.IContainerRegistry container, string name = null)
+        where TView : Page =>
+        container.RegisterForNavigation(typeof(TView), typeof(TViewModel), name, ViewLifeCycle.Scoped);
+
+    public static Pep.Ioc.IContainerRegistry RegisterForNavigation(this Pep.Ioc.IContainerRegistry container, Type view, Type viewModel, string name = null, ViewLifeCycle lifeCycle = ViewLifeCycle.Transient)
     {
         if (view is null)
             throw new ArgumentNullException(nameof(view));
@@ -28,11 +32,17 @@ public static class NavigationRegistrationExtensions
                 View = view,
                 ViewModel = viewModel
             })
-            .Register(view);
+            .RegisterScoped(view);
 
         if (viewModel != null)
             container.Register(viewModel);
 
         return container;
+    }
+
+    public enum ViewLifeCycle
+    {
+        Scoped,
+        Transient,
     }
 }

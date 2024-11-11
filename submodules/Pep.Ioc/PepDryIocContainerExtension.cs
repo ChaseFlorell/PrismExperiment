@@ -1,6 +1,7 @@
 using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using NanoidDotNet;
 
 namespace Pep.Ioc
 {
@@ -21,6 +22,10 @@ namespace Pep.Ioc
         private PepDryIocContainerExtension(IContainer container, IResolverContext? resolverContext)
         {
             _container = container;
+            if (resolverContext == null)
+            {
+
+            }
             _resolutionContext = resolverContext ?? container.OpenScope("root", true);
             if (!_container.IsRegistered<IContainerProvider>())
             {
@@ -29,6 +34,8 @@ namespace Pep.Ioc
 
             Console.WriteLine("Container Hashcode: {0}", _container.GetHashCode());
         }
+
+        public string InstanceId { get; } = Nanoid.Generate(Nanoid.Alphabets.UppercaseLetters, 6);
 
         /// <inheritdoc />
         public object Resolve(Type type) => _resolutionContext.Resolve(type);
@@ -54,9 +61,20 @@ namespace Pep.Ioc
         /// <inheritdoc />
         public IContainerProvider CreateScope(string name)
         {
+            Console.WriteLine("Current Resolution {0} creating named scope {1}", _resolutionContext.CurrentScope?.Name, name);
             var newScope = _resolutionContext.OpenScope(name, true);
+
+            Console.WriteLine($"Resolve Context Parent: {newScope?.Parent?.CurrentScope?.Name}");
+            Console.WriteLine($"Resolve Context: {newScope?.CurrentScope?.Name}");
+
             var pepDryIocContainerExtension = new PepDryIocContainerExtension(_container, newScope);
             newScope.Use<IContainerProvider>(pepDryIocContainerExtension);
+            var provider = newScope.Resolve<IContainerProvider>();
+            if (provider.InstanceId == pepDryIocContainerExtension.InstanceId)
+            {
+
+            }
+
             return pepDryIocContainerExtension;
         }
 
@@ -102,6 +120,12 @@ namespace Pep.Ioc
         public IContainerRegistry TryRegister<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(reuse: Reuse.Transient);
+            return this;
+        }
+
+        public IContainerRegistry RegisterScoped(Type type)
+        {
+            _container.Register(type, Reuse.Scoped);
             return this;
         }
 

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Web;
+using DryIoc;
 using Prism.Common;
 using Prism.Events;
 using Prism.Mvvm;
@@ -25,6 +26,7 @@ public class PageNavigationService : INavigationService, IRegistryAware
     private readonly IContainerProvider _container;
     protected readonly IWindowManager _windowManager;
     protected readonly IPageAccessor _pageAccessor;
+    private readonly IResolverContext _resolverContext;
     protected readonly IEventAggregator _eventAggregator;
 
     private Window _window;
@@ -58,16 +60,24 @@ public class PageNavigationService : INavigationService, IRegistryAware
     /// <param name="container">The <see cref="IContainerProvider"/> that will be used to resolve pages for navigation.</param>
     /// <param name="windowManager">The <see cref="IWindowManager"/> that will let the NavigationService retrieve, open or close the app Windows.</param>
     /// <param name="eventAggregator">The <see cref="IEventAggregator"/> that will raise <see cref="NavigationRequestEvent"/>.</param>
-    /// <param name="pageAccessor">The <see cref="IPageAccessor"/> that will let the NavigationService retrieve the <see cref="Page"/> for the current scope.</param>q
+    /// <param name="pageAccessor">The <see cref="IPageAccessor"/> that will let the NavigationService retrieve the <see cref="Page"/> for the current scope.</param>
+    /// <param name="resolverContext">The <see cref="IResolverContext"/> of the scope.</param>
+    /// q
     public PageNavigationService(IContainerProvider container,
         IWindowManager windowManager,
         IEventAggregator eventAggregator,
-        IPageAccessor pageAccessor)
+        IPageAccessor pageAccessor,
+        IResolverContext resolverContext)
     {
         _container = container;
         _windowManager = windowManager;
         _eventAggregator = eventAggregator;
         _pageAccessor = pageAccessor;
+        _resolverContext = resolverContext;
+
+        Console.WriteLine($"Container Extension Id: {container.InstanceId}");
+        Console.WriteLine($"Resolver Context Parent: {resolverContext?.Parent?.CurrentScope?.Name}");
+        Console.WriteLine($"Resolver Context: {resolverContext?.CurrentScope?.Name}");
     }
 
     /// <summary>

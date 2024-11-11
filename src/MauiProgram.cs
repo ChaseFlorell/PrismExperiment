@@ -38,7 +38,7 @@ public static class MauiProgram
             // << Dummy Dependencies
             // >> Navigation
             .RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main)
-            .RegisterForNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
+            .RegisterForScopedNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
             .RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
             .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
             .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf)
