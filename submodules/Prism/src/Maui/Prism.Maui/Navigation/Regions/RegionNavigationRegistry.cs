@@ -1,5 +1,5 @@
-﻿using Prism.Mvvm;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+﻿using DryIoc;
+using Prism.Mvvm;
 
 namespace Prism.Navigation.Regions;
 
@@ -10,7 +10,7 @@ internal class RegionNavigationRegistry : ViewRegistryBase, IRegionNavigationReg
     {
     }
 
-    protected override void ConfigureView(BindableObject bindable, IContainerProvider container)
+    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
     {
     }
 }

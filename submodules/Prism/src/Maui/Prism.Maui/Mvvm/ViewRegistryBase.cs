@@ -1,5 +1,5 @@
-﻿using Prism.Navigation.Xaml;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+﻿using DryIoc;
+using Prism.Navigation.Xaml;
 
 namespace Prism.Mvvm;
 
@@ -26,7 +26,7 @@ public abstract class ViewRegistryBase : ViewRegistryBase<BindableObject>
         ViewModelLocator.Autowire(view);
     }
 
-    protected override void SetContainerProvider(BindableObject view, IContainerProvider container)
+    protected override void SetContainerProvider(BindableObject view, IResolverContext container)
     {
         view.SetContainerProvider(container);
     }

@@ -1,9 +1,9 @@
 using System.Collections.Specialized;
+using DryIoc;
 using Prism.Behaviors;
 using Prism.Common;
 using Prism.Mvvm;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions.Adapters;
 
@@ -74,7 +74,7 @@ public class CarouselViewRegionAdapter : RegionAdapterBase<CarouselView>
     /// Creates a new instance of <see cref="SingleActiveRegion"/>.
     /// </summary>
     /// <returns>A new instance of <see cref="SingleActiveRegion"/>.</returns>
-    protected override IRegion CreateRegion(IContainerProvider container) =>
+    protected override IRegion CreateRegion(IResolverContext container) =>
         container.Resolve<SingleActiveRegion>();
 
     private class CarouselRegionBehavior : BehaviorBase<CarouselView>

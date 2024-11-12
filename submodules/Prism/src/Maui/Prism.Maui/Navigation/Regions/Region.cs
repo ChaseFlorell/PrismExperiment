@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using DryIoc;
 using Prism.Mvvm;
 using Prism.Navigation.Xaml;
 using Prism.Properties;

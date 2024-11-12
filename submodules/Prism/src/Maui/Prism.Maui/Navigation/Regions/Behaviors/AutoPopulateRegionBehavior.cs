@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using DryIoc;
 
 namespace Prism.Navigation.Regions.Behaviors;
 

@@ -1,10 +1,12 @@
-﻿using IContainerProvider = Pep.Ioc.IContainerProvider;
+﻿
+
+using DryIoc;
 
 namespace Prism.Navigation.Regions;
 
 internal static class RegionExtensions
 {
-    internal static IContainerProvider Container(this IRegion region)
+    internal static IResolverContext Container(this IRegion region)
     {
         if (region is ITargetAwareRegion car)
             return car.Container;

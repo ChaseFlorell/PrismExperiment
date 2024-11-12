@@ -1,10 +1,10 @@
+using DryIoc;
 using Microsoft.Extensions.Logging;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Navigation.Builder;
-using IContainerExtension = Pep.Ioc.IContainerExtension;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using IContainer = DryIoc.IContainer;
 
 namespace Prism;
 
@@ -17,12 +17,12 @@ public static class PrismAppBuilderExtensions
     /// Configures the <see cref="MauiAppBuilder"/> to use Prism with a callback for the <see cref="PrismAppBuilder"/>
     /// </summary>
     /// <param name="builder">The <see cref="MauiAppBuilder"/>.</param>
-    /// <param name="containerExtension">The instance of the <see cref="IContainerExtension"/> Prism should use.</param>
+    /// <param name="container">The instance of the <see cref="IContainerExtension"/> Prism should use.</param>
     /// <param name="configurePrism">A delegate callback for the <see cref="PrismAppBuilder"/></param>
     /// <returns>The <see cref="MauiAppBuilder"/>.</returns>
-    public static MauiAppBuilder UsePrism(this MauiAppBuilder builder, IContainerExtension containerExtension, Action<PrismAppBuilder> configurePrism)
+    public static MauiAppBuilder UsePrism(this MauiAppBuilder builder, IContainer container, Action<PrismAppBuilder> configurePrism)
     {
-        var prismBuilder = new PrismAppBuilder(containerExtension, builder);
+        var prismBuilder = new PrismAppBuilder(container, builder);
         configurePrism(prismBuilder);
         return builder;
     }
@@ -47,9 +47,9 @@ public static class PrismAppBuilderExtensions
     {
         builder.RegisterTypes(container =>
         {
-            container.TryRegisterSingleton<IModuleCatalog, ModuleCatalog>();
-            container.TryRegisterSingleton<IModuleManager, ModuleManager>();
-            container.TryRegisterSingleton<IModuleInitializer, ModuleInitializer>();
+            container.Register<IModuleCatalog, ModuleCatalog>(Reuse.Singleton);
+            container.Register<IModuleManager, ModuleManager>(Reuse.Singleton);
+            container.Register<IModuleInitializer, ModuleInitializer>(Reuse.Singleton);
         });
 
         return builder.OnInitialized(container =>
@@ -92,7 +92,7 @@ public static class PrismAppBuilderExtensions
     /// <param name="builder">The <see cref="PrismAppBuilder"/>.</param>
     /// <param name="createWindow">The Navigation Delegate.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public static PrismAppBuilder CreateWindow(this PrismAppBuilder builder, Func<IContainerProvider, INavigationService, Task> createWindow) =>
+    public static PrismAppBuilder CreateWindow(this PrismAppBuilder builder, Func<IResolverContext, INavigationService, Task> createWindow) =>
         builder.CreateWindow((c, n) => createWindow(c, n));
 
     /// <summary>
@@ -122,7 +122,7 @@ public static class PrismAppBuilderExtensions
     /// <param name="builder">The <see cref="PrismAppBuilder"/>.</param>
     /// <param name="createWindow">The Navigation Delegate.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public static PrismAppBuilder CreateWindow(this PrismAppBuilder builder, Func<IContainerProvider, INavigationService, INavigationBuilder> createWindow) =>
+    public static PrismAppBuilder CreateWindow(this PrismAppBuilder builder, Func<IResolverContext, INavigationService, INavigationBuilder> createWindow) =>
         builder.CreateWindow((c, n) => createWindow(c, n).NavigateAsync());
 
 
@@ -170,7 +170,7 @@ public static class PrismAppBuilderExtensions
     /// <param name="appAction">An <see cref="AppAction"/></param>
     /// <param name="callback">The callback to invoke when the <see cref="AppAction"/> is triggered.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public static PrismAppBuilder RegisterAppAction(this PrismAppBuilder builder, AppAction appAction, Func<IContainerProvider, INavigationService, AppAction, Task> callback)
+    public static PrismAppBuilder RegisterAppAction(this PrismAppBuilder builder, AppAction appAction, Func<IResolverContext, INavigationService, AppAction, Task> callback)
     {
         builder.MauiBuilder.ConfigureEssentials(essentials =>
         {
@@ -184,7 +184,7 @@ public static class PrismAppBuilderExtensions
                     if (app?.Handler?.MauiContext?.Services is null || app.Dispatcher is null)
                         return;
 
-                    var container = app.Handler.MauiContext.Services.GetRequiredService<IContainerProvider>();
+                    var container = app.Handler.MauiContext.Services.GetRequiredService<IResolverContext>();
                     var navigation = container.Resolve<INavigationService>();
                     await app.Dispatcher.DispatchAsync(() =>
                     {

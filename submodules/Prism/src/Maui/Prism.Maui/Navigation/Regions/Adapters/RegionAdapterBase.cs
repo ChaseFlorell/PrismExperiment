@@ -1,9 +1,9 @@
 using System.Globalization;
+using DryIoc;
 using Prism.Extensions;
 using Prism.Navigation.Regions.Behaviors;
 using Prism.Navigation.Xaml;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions.Adapters;
 
@@ -122,7 +122,7 @@ public abstract class RegionAdapterBase<T> : IRegionAdapter where T : VisualElem
     /// that will be used to adapt the object.
     /// </summary>
     /// <returns>A new instance of <see cref="IRegion"/>.</returns>
-    protected abstract IRegion CreateRegion(IContainerProvider container);
+    protected abstract IRegion CreateRegion(IResolverContext container);
 
     private static T GetCastedObject(object regionTarget)
     {

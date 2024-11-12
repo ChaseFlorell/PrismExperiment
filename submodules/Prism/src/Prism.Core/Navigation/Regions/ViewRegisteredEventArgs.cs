@@ -1,5 +1,5 @@
 using System;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using DryIoc;
 
 namespace Prism.Navigation.Regions
 {
@@ -13,7 +13,7 @@ namespace Prism.Navigation.Regions
         /// </summary>
         /// <param name="regionName">The region name to which the content was registered.</param>
         /// <param name="getViewDelegate">The content which was registered.</param>
-        public ViewRegisteredEventArgs(string regionName, Func<IContainerProvider, object> getViewDelegate)
+        public ViewRegisteredEventArgs(string regionName, Func<IResolverContext, object> getViewDelegate)
         {
             this.GetView = getViewDelegate;
             this.RegionName = regionName;
@@ -27,6 +27,6 @@ namespace Prism.Navigation.Regions
         /// <summary>
         /// Gets the content which was registered.
         /// </summary>
-        public Func<IContainerProvider, object> GetView { get; private set; }
+        public Func<IResolverContext, object> GetView { get; private set; }
     }
 }

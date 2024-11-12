@@ -1,4 +1,5 @@
 using System;
+using DryIoc;
 
 namespace Prism.Navigation.Regions
 {
@@ -62,7 +63,7 @@ namespace Prism.Navigation.Regions
         /// <param name="regionName">The name of the region to associate the view with.</param>
         /// <param name="getContentDelegate">The delegate used to resolve a concrete instance of the view.</param>
         /// <returns>The <see cref="IRegionManager"/>, for adding several views easily</returns>
-        IRegionManager RegisterViewWithRegion(string regionName, Func<Pep.Ioc.IContainerProvider, object> getContentDelegate);
+        IRegionManager RegisterViewWithRegion(string regionName, Func<IResolverContext, object> getContentDelegate);
 
         /// <summary>
         /// This method allows an IRegionManager to locate a specified region and navigate in it to the specified target Uri, passing a navigation callback and an instance of NavigationParameters, which holds a collection of object parameters.

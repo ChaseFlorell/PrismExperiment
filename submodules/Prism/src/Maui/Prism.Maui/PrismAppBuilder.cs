@@ -1,7 +1,6 @@
+using DryIoc;
 using DryIoc.Microsoft.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.LifecycleEvents;
-using Pep.Ioc;
 using Prism.AppModel;
 using Prism.Behaviors;
 using Prism.Common;
@@ -15,9 +14,7 @@ using Prism.Navigation.Regions;
 using Prism.Navigation.Regions.Adapters;
 using Prism.Navigation.Xaml;
 using Prism.Services;
-using IContainerExtension = Pep.Ioc.IContainerExtension;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
-using IContainerRegistry = Pep.Ioc.IContainerRegistry;
+using IContainer = DryIoc.IContainer;
 using TabbedPage = Microsoft.Maui.Controls.TabbedPage;
 
 namespace Prism;
@@ -27,19 +24,19 @@ namespace Prism;
 /// </summary>
 public sealed class PrismAppBuilder
 {
-    private readonly List<Action<IContainerRegistry>> _registrations;
-    private readonly List<Action<IContainerProvider>> _initializations;
-    private readonly IContainerProvider _container;
-    private Func<IContainerProvider, INavigationService, Task> _createWindow;
+    private readonly List<Action<IContainer>> _registrations;
+    private readonly List<Action<IResolverContext>> _initializations;
+    private readonly IContainer _container;
+    private Func<IResolverContext, INavigationService, Task> _createWindow;
     private Action<RegionAdapterMappings> _configureAdapters;
     private Action<IRegionBehaviorFactory> _configureBehaviors;
 
-    internal PrismAppBuilder(IContainerExtension containerExtension, MauiAppBuilder builder)
+    internal PrismAppBuilder(IContainer container, MauiAppBuilder builder)
     {
-        ArgumentNullException.ThrowIfNull(containerExtension);
+        ArgumentNullException.ThrowIfNull(container);
         ArgumentNullException.ThrowIfNull(builder);
 
-        _container = containerExtension;
+        _container = container;
         _registrations = [];
         _initializations = [];
 
@@ -55,13 +52,13 @@ public sealed class PrismAppBuilder
         // This is primarily to help with Unit Tests
         IDialogContainer.DialogStack.Clear();
         MauiBuilder = builder;
-        MauiBuilder.ConfigureContainer(new PepServiceProviderFactory(RegistrationCallback, containerExtension));
+        MauiBuilder.ConfigureContainer(new PepServiceProviderFactory(RegistrationCallback, container));
 
         //ContainerLocator.ResetContainer();
         //ContainerLocator.SetContainerExtension(containerExtension);
 
-        containerExtension.RegisterInstance(this);
-        containerExtension.RegisterSingleton<IMauiInitializeService, PrismInitializationService>();
+        container.RegisterInstance(this);
+        container.Register<IMauiInitializeService, PrismInitializationService>(Reuse.Singleton);
 
         ConfigureViewModelLocator();
     }
@@ -110,7 +107,7 @@ public sealed class PrismAppBuilder
     /// </summary>
     /// <param name="registerTypes">The delegate to register your services.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public PrismAppBuilder RegisterTypes(Action<IContainerRegistry> registerTypes)
+    public PrismAppBuilder RegisterTypes(System.Action<IContainer> registerTypes)
     {
         _registrations.Add(registerTypes);
         return this;
@@ -121,7 +118,7 @@ public sealed class PrismAppBuilder
     /// </summary>
     /// <param name="action">The delegate to invoke.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public PrismAppBuilder OnInitialized(Action<IContainerProvider> action)
+    public PrismAppBuilder OnInitialized(System.Action<IResolverContext> action)
     {
         _initializations.Add(action);
         return this;
@@ -183,22 +180,22 @@ public sealed class PrismAppBuilder
         var navRegistry = _container.Resolve<INavigationRegistry>();
         if (!navRegistry.IsRegistered(nameof(NavigationPage)))
         {
-            var container = (IContainerRegistry)_container;
+            var container = _container;
             container
-                .Register(() => new PrismNavigationPage())
-                .RegisterInstance(new ViewRegistration
-                {
-                    Name = nameof(NavigationPage),
-                    View = typeof(PrismNavigationPage),
-                    Type = ViewType.Page
-                });
+                .RegisterDelegate(() => new PrismNavigationPage());
+            container.RegisterInstance(new ViewRegistration
+            {
+                Name = nameof(NavigationPage),
+                View = typeof(PrismNavigationPage),
+                Type = ViewType.Page
+            });
 
             var registrations = _container.Resolve<IEnumerable<ViewRegistration>>().ToList();
         }
 
         if (!navRegistry.IsRegistered(nameof(TabbedPage)))
         {
-            var registry = _container as Pep.Ioc.IContainerRegistry;
+            var registry = _container;
             registry.RegisterForNavigation<TabbedPage>();
         }
     }
@@ -220,7 +217,7 @@ public sealed class PrismAppBuilder
     /// </summary>
     /// <param name="createWindow">The Navigation Delegate.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public PrismAppBuilder CreateWindow(Func<IContainerProvider, INavigationService, Task> createWindow)
+    public PrismAppBuilder CreateWindow(Func<IResolverContext, INavigationService, Task> createWindow)
     {
         _createWindow = createWindow;
         return this;
@@ -229,7 +226,7 @@ public sealed class PrismAppBuilder
     /// <summary>
     /// Configures the <see cref="ViewModelLocator"/> used by Prism.
     /// </summary>
-    public PrismAppBuilder ConfigureDefaultViewModelFactory(Func<IContainerProvider, object, Type, object> viewModelFactory)
+    public PrismAppBuilder ConfigureDefaultViewModelFactory(Func<IResolverContext, object, Type, object> viewModelFactory)
     {
         ViewModelLocationProvider.SetDefaultViewModelFactory((view, type) =>
         {
@@ -243,7 +240,7 @@ public sealed class PrismAppBuilder
         return this;
     }
 
-    private void RegistrationCallback(IContainerExtension container)
+    private void RegistrationCallback(IContainer container)
     {
         RegisterDefaultRequiredTypes(container);
 
@@ -272,20 +269,19 @@ public sealed class PrismAppBuilder
         return this;
     }
 
-    private void RegisterDefaultRequiredTypes(IContainerRegistry containerRegistry)
+    private void RegisterDefaultRequiredTypes(DryIoc.IContainer containerRegistry)
     {
-        containerRegistry.TryRegisterSingleton<IServiceScopeFactory, DryIocServiceScopeFactory>();
-        containerRegistry.TryRegisterSingleton<IEventAggregator, EventAggregator>();
-        containerRegistry.TryRegisterSingleton<IKeyboardMapper, KeyboardMapper>();
-        containerRegistry.TryRegisterSingleton<IPageDialogService, PageDialogService>();
-        containerRegistry.TryRegisterScoped<IDialogService, DialogService>();
-        containerRegistry.TryRegister<IDialogViewRegistry, DialogViewRegistry>();
-        containerRegistry.RegisterDialogContainer<DialogContainerPage>();
+        containerRegistry.Register<IServiceScopeFactory, DryIocServiceScopeFactory>(Reuse.Singleton);
+        containerRegistry.Register<IEventAggregator, EventAggregator>(Reuse.Singleton);
+        containerRegistry.Register<IKeyboardMapper, KeyboardMapper>(Reuse.Singleton);
+        containerRegistry.Register<IPageDialogService, PageDialogService>(Reuse.Singleton);
+        containerRegistry.Register<IDialogService, DialogService>(Reuse.Scoped);
+        containerRegistry.Register<IDialogViewRegistry, DialogViewRegistry>();
         // containerRegistry.RegisterSingleton<IDeviceService, DeviceService>();
-        containerRegistry.TryRegisterScoped<IPageAccessor, PageAccessor>();
-        containerRegistry.TryRegisterScoped<INavigationService, PageNavigationService>();
-        containerRegistry.TryRegister<INavigationRegistry, NavigationRegistry>();
-        containerRegistry.RegisterManySingleton<PrismWindowManager>();
+        containerRegistry.Register<IPageAccessor, PageAccessor>(Reuse.Scoped);
+        containerRegistry.Register<INavigationService, PageNavigationService>(Reuse.Scoped);
+        containerRegistry.Register<INavigationRegistry, NavigationRegistry>();
+        containerRegistry.RegisterMany<PrismWindowManager>(Reuse.Singleton);
         containerRegistry.RegisterPageBehavior<NavigationPage, NavigationPageSystemGoBackBehavior>();
         containerRegistry.RegisterPageBehavior<NavigationPage, NavigationPageActiveAwareBehavior>();
         containerRegistry.RegisterPageBehavior<NavigationPage, NavigationPageTabbedParentBehavior>();
@@ -294,5 +290,25 @@ public sealed class PrismAppBuilder
         containerRegistry.RegisterPageBehavior<PageScopeBehavior>();
         containerRegistry.RegisterPageBehavior<RegionCleanupBehavior>();
         // containerRegistry.RegisterRegionServices(_configureAdapters, _configureBehaviors);
+    }
+}
+
+internal class PepServiceProviderFactory : IServiceProviderFactory<IContainer>
+{
+    public PepServiceProviderFactory(Action<IContainer> registrationCallback, IContainer container)
+    {
+       
+    }
+
+    /// <inheritdoc />
+    public IContainer CreateBuilder(IServiceCollection services)
+    {
+        return TODO_IMPLEMENT_ME;
+    }
+
+    /// <inheritdoc />
+    public IServiceProvider CreateServiceProvider(IContainer containerBuilder)
+    {
+        return TODO_IMPLEMENT_ME;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using DryIoc;
+using Prism.Commands;
 using Prism.Common;
 using Prism.Dialogs.Xaml;
 using Prism.Mvvm;

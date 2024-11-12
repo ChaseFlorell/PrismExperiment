@@ -1,9 +1,9 @@
-﻿using Prism.Behaviors;
+﻿using DryIoc;
+using Prism.Behaviors;
 using Prism.Common;
 using Prism.Mvvm;
 using Prism.Navigation.Xaml;
 using TabbedPage = Microsoft.Maui.Controls.TabbedPage;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation;
 
@@ -14,24 +14,24 @@ internal class NavigationRegistry : ViewRegistryBase, INavigationRegistry
     {
     }
 
-    protected override void ConfigureView(BindableObject bindable, IContainerProvider container)
+    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
     {
         ConfigurePage(container, bindable as Page);
     }
 
-    private static void ConfigurePage(IContainerProvider container, Page page)
+    private static void ConfigurePage(IResolverContext container, Page page)
     {
         if (page is TabbedPage tabbed)
         {
             foreach (var child in tabbed.Children)
             {
-                var scope = container.CreateScope(GetScopeName(child));
+                var scope = container.OpenScope(GetScopeName(child));
                 ConfigurePage(scope, child);
             }
         }
         else if (page is NavigationPage navPage && navPage.RootPage is not null)
         {
-            var scope = container.CreateScope(GetScopeName(navPage));
+            var scope = container.OpenScope(GetScopeName(navPage));
             ConfigurePage(scope, navPage.RootPage);
 
             if (navPage.RootPage.GetType().Equals(typeof(Page)))

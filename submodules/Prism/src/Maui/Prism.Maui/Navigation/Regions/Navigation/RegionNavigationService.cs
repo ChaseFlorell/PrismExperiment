@@ -1,7 +1,8 @@
-﻿using Prism.Common;
+﻿using DryIoc;
+using Prism.Common;
 using Prism.Properties;
-using IContainerExtension = Pep.Ioc.IContainerExtension;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using IContainer = DryIoc.IContainer;
+using IResolverContext = DryIoc.IResolverContext;
 
 namespace Prism.Navigation.Regions.Navigation;
 
@@ -10,7 +11,7 @@ namespace Prism.Navigation.Regions.Navigation;
 /// </summary>
 public class RegionNavigationService : IRegionNavigationService
 {
-    private readonly IContainerProvider _container;
+    private readonly IResolverContext _container;
     private readonly IRegionNavigationContentLoader _regionNavigationContentLoader;
     private NavigationContext _currentNavigationContext;
 
@@ -20,7 +21,7 @@ public class RegionNavigationService : IRegionNavigationService
     /// <param name="container">The <see cref="IContainerExtension" />.</param>
     /// <param name="regionNavigationContentLoader">The navigation target handler.</param>
     /// <param name="journal">The journal.</param>
-    public RegionNavigationService(IContainerExtension container, IRegionNavigationContentLoader regionNavigationContentLoader, IRegionNavigationJournal journal)
+    public RegionNavigationService(IContainer container, IRegionNavigationContentLoader regionNavigationContentLoader, IRegionNavigationJournal journal)
     {
         _container = container ?? throw new ArgumentNullException(nameof(container));
         _regionNavigationContentLoader = regionNavigationContentLoader ?? throw new ArgumentNullException(nameof(regionNavigationContentLoader));

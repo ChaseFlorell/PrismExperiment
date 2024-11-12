@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using DryIoc;
 using Pep.Ioc;
 using Prism.Properties;
 
@@ -13,14 +14,14 @@ namespace Prism.Navigation.Regions
     /// </summary>
     public class RegionBehaviorFactory : IRegionBehaviorFactory
     {
-        private readonly Pep.Ioc.IContainerProvider _container;
+        private readonly IResolverContext _container;
         private readonly Dictionary<string, Type> _registeredBehaviors = new Dictionary<string, Type>();
 
         /// <summary>
         /// Initializes a new instance of <see cref="RegionBehaviorFactory"/>.
         /// </summary>
         /// <param name="container"><see cref="IContainerExtension"/> used to create the instance of the behavior from its <see cref="Type"/>.</param>
-        public RegionBehaviorFactory(Pep.Ioc.IContainerExtension container)
+        public RegionBehaviorFactory(IResolverContext container)
         {
             _container = container;
         }

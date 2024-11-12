@@ -1,4 +1,5 @@
 using System.Globalization;
+using DryIoc;
 using Prism.Common;
 using Prism.Mvvm;
 using Prism.Properties;
@@ -7,7 +8,7 @@ using ContainerResolutionException = Pep.Ioc.ContainerResolutionException;
 namespace Prism.Navigation.Regions.Navigation;
 
 /// <summary>
-/// Implementation of <see cref="IRegionNavigationContentLoader"/> that relies on a <see cref="IContainerProvider"/>
+/// Implementation of <see cref="IRegionNavigationContentLoader"/> that relies on a <see cref="IResolverContext"/>
 /// to create new views when necessary.
 /// </summary>
 public class RegionNavigationContentLoader : IRegionNavigationContentLoader

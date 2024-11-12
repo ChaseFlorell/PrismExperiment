@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using DryIoc;
+
 namespace Prism.Mvvm;
 
 /// <summary>
@@ -19,7 +20,7 @@ public interface IViewRegistry
     /// <param name="container"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    object CreateView(IContainerProvider container, string name);
+    object CreateView(IResolverContext container, string name);
 
     /// <summary>
     /// Gets the ViewType for a specified navigation name

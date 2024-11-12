@@ -1,9 +1,8 @@
 using System.ComponentModel;
+using DryIoc;
 using Pep.Ioc;
 using Prism.Common;
 using Prism.Navigation.Internals;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
-using IScopedProvider = Pep.Ioc.IScopedProvider;
 
 namespace Prism.Navigation.Xaml;
 
@@ -16,9 +15,9 @@ public static class Navigation
 
     private static readonly BindableProperty NavigationScopeProperty =
         BindableProperty.CreateAttached(PrismContainerProvider,
-            typeof(IContainerProvider),
+            typeof(IResolverContext),
             typeof(Navigation),
-            default(IContainerProvider),
+            default(IResolverContext),
             propertyChanged: OnNavigationScopeChanged);
 
     private static readonly BindableProperty ChildMvvmViewsProperty =
@@ -126,12 +125,12 @@ public static class Navigation
     }
 
     /// <summary>
-    /// Sets the <see cref="IContainerProvider"/> for the given <see cref="BindableObject"/>
+    /// Sets the <see cref="IResolverContext"/> for the given <see cref="BindableObject"/>
     /// </summary>
     /// <param name="bindable">The <see cref="BindableObject"/>.</param>
-    /// <param name="container">The <see cref="IContainerProvider"/>.</param>
+    /// <param name="container">The <see cref="IResolverContext"/>.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void SetContainerProvider(this BindableObject bindable, IContainerProvider container)
+    public static void SetContainerProvider(this BindableObject bindable, IResolverContext container)
     {
         bindable.SetValue(NavigationScopeProperty, container);
     }
@@ -140,17 +139,17 @@ public static class Navigation
     /// Gets the Container for the given View
     /// </summary>
     /// <param name="bindable">The View</param>
-    /// <returns>The <see cref="IContainerProvider"/>.</returns>
+    /// <returns>The <see cref="IResolverContext"/>.</returns>
     /// <remarks>
     /// Will initialize a new Container Scope if the <see cref="Mvvm.ViewModelLocatorBehavior"/> is Forced.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IContainerProvider GetContainerProvider(this BindableObject bindable)
+    public static IResolverContext GetContainerProvider(this BindableObject bindable)
     {
         if (bindable is null)
             return null;
 
-        var container = bindable.GetValue(NavigationScopeProperty) as IContainerProvider;
+        var container = bindable.GetValue(NavigationScopeProperty) as IResolverContext;
         if (container is not null)
             return container;
         else if (bindable is Page page)

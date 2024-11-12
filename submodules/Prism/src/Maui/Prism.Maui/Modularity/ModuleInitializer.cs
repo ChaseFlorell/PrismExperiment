@@ -1,12 +1,12 @@
-﻿using IContainerExtension = Pep.Ioc.IContainerExtension;
+﻿using DryIoc;
 
 namespace Prism.Modularity;
 
 public class ModuleInitializer : IModuleInitializer
 {
-    readonly IContainerExtension _container;
+    readonly IResolverContext _container;
 
-    public ModuleInitializer(IContainerExtension container)
+    public ModuleInitializer(IResolverContext container)
     {
         _container = container;
     }
@@ -16,7 +16,8 @@ public class ModuleInitializer : IModuleInitializer
         var module = CreateModule(Type.GetType(moduleInfo.ModuleType, true));
         if (module != null)
         {
-            module.RegisterTypes(_container);
+            throw new NotImplementedException();
+           // module.RegisterTypes(_container);
             module.OnInitialized(_container);
         }
     }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using DryIoc;
 
 namespace Prism.Navigation.Regions
 {
@@ -22,9 +22,9 @@ namespace Prism.Navigation.Regions
         /// Returns the contents associated with a region name.
         /// </summary>
         /// <param name="regionName">Region name for which contents are requested.</param>
-        /// <param name="container">The <see cref="IContainerProvider"/> to use to resolve the View.</param>
+        /// <param name="container">The <see cref="IResolverContext"/> to use to resolve the View.</param>
         /// <returns>Collection of contents associated with the <paramref name="regionName"/>.</returns>
-        IEnumerable<object> GetContents(string regionName, IContainerProvider container);
+        IEnumerable<object> GetContents(string regionName, IResolverContext container);
 
         /// <summary>
         /// Associate a view with a region, by registering a type. When the region get's displayed
@@ -48,6 +48,6 @@ namespace Prism.Navigation.Regions
         /// </summary>
         /// <param name="regionName">Region name to which the <paramref name="getContentDelegate"/> will be registered.</param>
         /// <param name="getContentDelegate">Delegate used to retrieve the content associated with the <paramref name="regionName"/>.</param>
-        public void RegisterViewWithRegion(string regionName, Func<IContainerProvider, object> getContentDelegate);
+        public void RegisterViewWithRegion(string regionName, Func<IResolverContext, object> getContentDelegate);
     }
 }

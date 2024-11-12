@@ -1,4 +1,5 @@
-﻿using IContainerProvider = Pep.Ioc.IContainerProvider;
+﻿
+using DryIoc;
 
 namespace Prism.Behaviors;
 
@@ -19,10 +20,10 @@ internal class DelegatePageBehaviorFactory : IPageBehaviorFactory
 
 internal class DelegateContainerPageBehaviorFactory : IPageBehaviorFactory
 {
-    private readonly Action<IContainerProvider, Page> _applyBehaviors;
-    private readonly IContainerProvider _container;
+    private readonly Action<IResolverContext, Page> _applyBehaviors;
+    private readonly IResolverContext _container;
 
-    public DelegateContainerPageBehaviorFactory(Action<IContainerProvider, Page> applyBehaviors, IContainerProvider container)
+    public DelegateContainerPageBehaviorFactory(Action<IResolverContext, Page> applyBehaviors, IResolverContext container)
     {
         _applyBehaviors = applyBehaviors;
         _container = container;

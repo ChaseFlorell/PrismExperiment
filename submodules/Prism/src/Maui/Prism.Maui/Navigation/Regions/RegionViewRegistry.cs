@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using DryIoc;
 using Prism.Common;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions;
 
@@ -13,7 +13,7 @@ namespace Prism.Navigation.Regions;
 /// </summary>
 public class RegionViewRegistry : IRegionViewRegistry
 {
-    private readonly ListDictionary<string, Func<IContainerProvider, object>> _registeredContent = new();
+    private readonly ListDictionary<string, Func<IResolverContext, object>> _registeredContent = new();
     private readonly WeakDelegatesManager _contentRegisteredListeners = new();
 
     /// <summary>
@@ -28,10 +28,10 @@ public class RegionViewRegistry : IRegionViewRegistry
     /// <summary>
     /// Returns the contents registered for a region.
     /// </summary>
-    /// <param name="container">The <see cref="IContainerProvider"/> to use.</param>
+    /// <param name="container">The <see cref="IResolverContext"/> to use.</param>
     /// <param name="regionName">Name of the region which content is being requested.</param>
     /// <returns>Collection of contents registered for the region.</returns>
-    public IEnumerable<object> GetContents(string regionName, IContainerProvider container)
+    public IEnumerable<object> GetContents(string regionName, IResolverContext container)
     {
         var items = new List<object>();
         foreach (var getContentDelegate in _registeredContent[regionName])
@@ -79,7 +79,7 @@ public class RegionViewRegistry : IRegionViewRegistry
     /// </summary>
     /// <param name="regionName">Region name to which the <paramref name="getContentDelegate"/> will be registered.</param>
     /// <param name="getContentDelegate">Delegate used to retrieve the content associated with the <paramref name="regionName"/>.</param>
-    public void RegisterViewWithRegion(string regionName, Func<IContainerProvider, object> getContentDelegate)
+    public void RegisterViewWithRegion(string regionName, Func<IResolverContext, object> getContentDelegate)
     {
         _registeredContent.Add(regionName, getContentDelegate);
         OnContentRegistered(new ViewRegisteredEventArgs(regionName, getContentDelegate));

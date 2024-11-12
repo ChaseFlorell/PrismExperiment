@@ -1,6 +1,6 @@
 using System.Collections.Specialized;
+using DryIoc;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions.Adapters;
 
@@ -54,6 +54,6 @@ public class ScrollViewRegionAdapter : RegionAdapterBase<ScrollView>
     /// Creates a new instance of <see cref="Region"/>.
     /// </summary>
     /// <returns>A new instance of <see cref="Region"/>.</returns>
-    protected override IRegion CreateRegion(IContainerProvider container) =>
+    protected override IRegion CreateRegion(IResolverContext container) =>
         container.Resolve<Region>();
 }

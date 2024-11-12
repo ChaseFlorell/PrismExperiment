@@ -1,10 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
+using DryIoc;
 using Microsoft.Extensions.Logging;
 using Prism.Behaviors;
 using Prism.Extensions;
 using Prism.Navigation.Xaml;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Xaml;
 
@@ -37,7 +37,7 @@ public abstract class TargetAwareExtensionBase<T> : BindableObject, IMarkupExten
         }
     }
 
-    protected IContainerProvider Container => TargetElement.GetContainerProvider();
+    protected IResolverContext Container => TargetElement.GetContainerProvider();
 
     /// <summary>
     /// Sets the Target BindingContext strategy

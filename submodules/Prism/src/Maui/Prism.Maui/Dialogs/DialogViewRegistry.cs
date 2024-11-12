@@ -1,5 +1,5 @@
-﻿using Prism.Mvvm;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+﻿using DryIoc;
+using Prism.Mvvm;
 
 namespace Prism.Dialogs;
 
@@ -22,7 +22,7 @@ public class DialogViewRegistry : ViewRegistryBase, IDialogViewRegistry
     /// </summary>
     /// <param name="bindable">The bindable object representing the dialog view to configure.</param>
     /// <param name="container">The container provider to use for resolving dependencies.</param>
-    protected override void ConfigureView(BindableObject bindable, IContainerProvider container)
+    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
     {
     }
 }

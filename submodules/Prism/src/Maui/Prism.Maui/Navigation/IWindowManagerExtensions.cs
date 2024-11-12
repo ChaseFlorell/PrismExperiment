@@ -1,3 +1,4 @@
+using DryIoc;
 using Prism.Dialogs;
 using Prism.Navigation.Xaml;
 

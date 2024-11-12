@@ -8,7 +8,7 @@ public interface IDialogService
     /// <summary>
     /// Displays a dialog.
     /// </summary>
-    /// <param name="name">The unique name of the dialog to display. Must match an entry in the <see cref="Prism.Ioc.IContainerRegistry"/>.</param>
+    /// <param name="name">The unique name of the dialog to display. Must match an entry in the <see cref="Prism.Ioc.DryIoc.IContainer"/>.</param>
     /// <param name="parameters">Parameters that the dialog can use for custom functionality.</param>
     /// <param name="callback">The action to be invoked upon successful or failed completion of displaying the dialog.</param>
     /// <example>

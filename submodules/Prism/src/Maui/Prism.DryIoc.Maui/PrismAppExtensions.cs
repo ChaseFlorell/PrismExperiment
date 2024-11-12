@@ -1,5 +1,4 @@
 ﻿using DryIoc;
-using Pep.Ioc;
 using Prism;
 
 namespace Microsoft.Maui;
@@ -11,7 +10,7 @@ public static class PrismAppExtensions
 {
     public static MauiAppBuilder UsePrism(this MauiAppBuilder builder, Action<PrismAppBuilder> configurePrism)
     {
-        return builder.UsePrism(new PepDryIocContainerExtension(), configurePrism);
+        return builder.UsePrism(new Container(), configurePrism);
     }
 
     public static MauiAppBuilder UsePrism(this MauiAppBuilder builder, Rules rules, Action<PrismAppBuilder> configurePrism)
@@ -19,6 +18,6 @@ public static class PrismAppExtensions
         rules = rules.WithTrackingDisposableTransients()
             .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments))
             .WithFactorySelector(Rules.SelectLastRegisteredFactory());
-        return builder.UsePrism(new PepDryIocContainerExtension(rules), configurePrism);
+        return builder.UsePrism(new Container(rules), configurePrism);
     }
 }

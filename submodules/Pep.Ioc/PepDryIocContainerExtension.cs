@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Pep.Ioc
 {
-    public class PepDryIocContainerExtension : IContainerExtension<IContainer>
+    public class PepDryIocContainerExtension
     {
         public PepDryIocContainerExtension() : this(__containerRules)
         {
@@ -22,10 +22,6 @@ namespace Pep.Ioc
         {
             _container = container;
             _resolutionContext = resolverContext ?? container.OpenScope("root", true);
-            if (!_container.IsRegistered<IContainerProvider>())
-            {
-                _container.RegisterDelegate<IContainerProvider>(() => this);
-            }
 
             Console.WriteLine("Container Hashcode: {0}", _container.GetHashCode());
         }
@@ -41,124 +37,118 @@ namespace Pep.Ioc
         {
             try
             {
-                List<object> list = ((IEnumerable<(Type, object)>)parameters).Where<(Type, object)>((Func<(Type, object), bool>)(x => !(x is IContainerProvider))).Select<(Type, object), object>((Func<(Type, object), object>)(x => x)).ToList<object>();
+                List<object> list = ((IEnumerable<(Type, object)>)parameters).Where<(Type, object)>((Func<(Type, object), bool>)(x => !(x is IResolverContext))).Select<(Type, object), object>((Func<(Type, object), object>)(x => x)).ToList<object>();
                 list.Add((object)this);
                 return _resolutionContext.Resolve(type, list.ToArray(), IfUnresolved.Throw, (Type)null, (object)null);
             }
             catch (Exception ex)
             {
-                throw new ContainerResolutionException(type, ex, (IContainerProvider)this);
+                throw new ContainerResolutionException(type, ex, (IResolverContext)this);
             }
         }
 
         /// <inheritdoc />
-        public IContainerProvider CreateScope(string name)
-        {
-            var newScope = _resolutionContext.OpenScope(name, true);
-            var pepDryIocContainerExtension = new PepDryIocContainerExtension(_container, newScope);
-            newScope.Use<IContainerProvider>(pepDryIocContainerExtension);
-            return pepDryIocContainerExtension;
-        }
+        public IResolverContext CreateScope(string name) => _resolutionContext.OpenScope(name, true);
 
         /// <inheritdoc />
         public bool IsRegistered<T>() => _container.IsRegistered<T>();
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterInstance<TService>(TService instance)
+        public DryIoc.IContainer RegisterInstance<TService>(TService instance)
         {
             _container.RegisterInstance(instance);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterManySingleton<TImplementation>()
+        public DryIoc.IContainer RegisterManySingleton<TImplementation>()
         {
             _container.RegisterMany<TImplementation>(Reuse.Singleton);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry TryRegisterSingleton<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer TryRegisterSingleton<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(Reuse.Singleton);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry TryRegisterScoped<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer TryRegisterScoped<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(Reuse.Scoped);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry Register<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer Register<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>();
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry TryRegister<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer TryRegister<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(reuse: Reuse.Transient);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterScoped<TService>(Func<IContainerProvider, TService> factoryMethod)
+        public DryIoc.IContainer RegisterScoped<TService>(Func<IResolverContext, TService> factoryMethod)
         {
-            _container.RegisterDelegate<IContainerProvider>(typeof(TService), provider => factoryMethod(provider)!, Reuse.Scoped);
-            return this;
+            _container.RegisterDelegate<IResolverContext>(typeof(TService), provider => factoryMethod(provider)!, Reuse.Scoped);
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterSingleton<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer RegisterSingleton<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(Reuse.Singleton);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterSingleton<TService>(Func<IContainerProvider, TService> factoryMethod)
+        public DryIoc.IContainer RegisterSingleton<TService>(Func<IResolverContext, TService> factoryMethod)
         {
-            _container.RegisterDelegate<IContainerProvider>(typeof(TService), provider => factoryMethod(provider)!, Reuse.Singleton);
-            return this;
+            _container.RegisterDelegate<IResolverContext>(typeof(TService), provider => factoryMethod(provider)!, Reuse.Singleton);
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry RegisterScoped<TService, TImplementation>() where TImplementation : TService
+        public DryIoc.IContainer RegisterScoped<TService, TImplementation>() where TImplementation : TService
         {
             _container.Register<TService, TImplementation>(Reuse.Scoped);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry Register<TService>(Func<TService> func)
+        public DryIoc.IContainer Register<TService>(Func<TService> func)
         {
             _container.RegisterDelegate(func);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry Register(Type type)
+        public DryIoc.IContainer Register(Type type)
         {
             _container.Register(type);
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry Register<TService>()
+        public DryIoc.IContainer Register<TService>()
         {
             _container.Register<TService>();
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
-        public IContainerRegistry TryRegister<TService>()
+        public DryIoc.IContainer TryRegister<TService>()
         {
             _container.Register<TService>();
-            return this;
+            return default;
         }
 
         /// <inheritdoc />
@@ -171,7 +161,7 @@ namespace Pep.Ioc
         public IServiceProvider CreateServiceProvider() => _container.BuildServiceProvider();
 
         /// <inheritdoc />
-        Type? IContainerInfo.GetRegistrationType(string key)
+        Type? GetRegistrationType(string key)
         {
             ServiceRegistrationInfo registrationInfo = _container.GetServiceRegistrations().Where<ServiceRegistrationInfo>((Func<ServiceRegistrationInfo, bool>)(r => key.Equals(r.OptionalServiceKey?.ToString(), StringComparison.Ordinal))).FirstOrDefault<ServiceRegistrationInfo>();
             if (registrationInfo.OptionalServiceKey == null)
@@ -180,7 +170,7 @@ namespace Pep.Ioc
         }
 
         /// <inheritdoc />
-        Type? IContainerInfo.GetRegistrationType(Type serviceType)
+        Type? GetRegistrationType(Type serviceType)
         {
             ServiceRegistrationInfo registrationInfo = _container.GetServiceRegistrations().Where<ServiceRegistrationInfo>((Func<ServiceRegistrationInfo, bool>)(x => x.ServiceType == serviceType)).FirstOrDefault<ServiceRegistrationInfo>();
             return (object)registrationInfo.ServiceType != null ? registrationInfo.ImplementationType : (Type)null;

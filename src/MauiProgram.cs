@@ -1,5 +1,6 @@
 ﻿using DryIoc;
 using Microsoft.Maui.LifecycleEvents;
+using Pep.Ioc;
 using Prism;
 using Prism.Controls;
 using Prism.Mvvm;
@@ -29,29 +30,27 @@ public static class MauiProgram
         .RegisterTypes(RegisterTypes)
         .CreateWindow((_, navigation) => navigation.NavigateAsync(NavigationUrl.NewNavigationPage(NavigationUrl.Main)).HandleNavigation());
 
-    private static void RegisterTypes(Pep.Ioc.IContainerRegistry containerRegistry)
+    private static void RegisterTypes(IContainer containerRegistry)
     {
-        containerRegistry
-            .Register<ILifecycleEventService, LifecycleEventService>()
-            // >> Dummy Dependencies
-            .RegisterScoped<IDummyDependency, DummyDependency>()
-            // << Dummy Dependencies
-            // >> Navigation
-            .RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main)
-            .RegisterForNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha)
-            .RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo)
-            .RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf)
-            .RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf)
-            .Register<PrismNavigationPage>(() => new PrismNavigationPage())
-            .RegisterInstance(new ViewRegistration
-            {
-                Name = nameof(NavigationPage),
-                View = typeof(PrismNavigationPage),
-                Type = ViewType.Page
-            });
+        containerRegistry.Register<ILifecycleEventService, LifecycleEventService>();
+        // >> Dummy Dependencies
+        containerRegistry.Register<IDummyDependency, DummyDependency>(Reuse.Scoped);
+        // << Dummy Dependencies
+        // >> Navigation
+        containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>(NavigationUrl.Main);
+        containerRegistry.RegisterForNavigation<AlphaWorkflow, AlphaWorkflowViewModel>(NavigationUrl.Alpha);
+        containerRegistry.RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo);
+        containerRegistry.RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf);
+        containerRegistry.RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);
+        containerRegistry.RegisterDelegate(() => new PrismNavigationPage());
+        containerRegistry.RegisterInstance(new ViewRegistration
+        {
+            Name = nameof(NavigationPage),
+            View = typeof(PrismNavigationPage),
+            Type = ViewType.Page
+        });
         // << Navigation
-        ((Pep.Ioc.IContainerExtension<IContainer>)containerRegistry)
-            .GetContainer()
+        containerRegistry
             .Register<object>(
                 made: Made.Of(req => typeof(LoggingDecorator)
                     .SingleMethod(nameof(LoggingDecorator.Decorate))

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using DryIoc;
 using Microsoft.Extensions.Logging;
 using Prism.Navigation.Xaml;
 using Prism.Xaml;

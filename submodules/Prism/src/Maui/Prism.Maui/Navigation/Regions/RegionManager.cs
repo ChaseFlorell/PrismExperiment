@@ -1,6 +1,6 @@
-﻿using Pep.Ioc;
+﻿using DryIoc;
+using Pep.Ioc;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions;
 
@@ -106,7 +106,7 @@ public partial class RegionManager : IRegionManager
     /// <param name="regionName">The name of the region to associate the view with.</param>
     /// <param name="getContentDelegate">The delegate used to resolve a concrete instance of the view.</param>
     /// <returns>The <see cref="IRegionManager"/>, for adding several views easily</returns>
-    public IRegionManager RegisterViewWithRegion(string regionName, Func<IContainerProvider, object> getContentDelegate)
+    public IRegionManager RegisterViewWithRegion(string regionName, Func<IResolverContext, object> getContentDelegate)
     {
         throw new ContainerLocatorMisuseException();
         /*

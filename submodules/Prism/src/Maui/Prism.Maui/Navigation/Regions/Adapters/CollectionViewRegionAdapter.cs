@@ -1,5 +1,5 @@
+using DryIoc;
 using Prism.Properties;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
 
 namespace Prism.Navigation.Regions.Adapters;
 
@@ -43,6 +43,6 @@ public class CollectionViewRegionAdapter : RegionAdapterBase<CollectionView>
     /// Creates a new instance of <see cref="IRegion"/>.
     /// </summary>
     /// <returns>A new instance of <see cref="Region"/>.</returns>
-    protected override IRegion CreateRegion(IContainerProvider container) =>
+    protected override IRegion CreateRegion(IResolverContext container) =>
         container.Resolve<Region>();
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using DryIoc;
 using Prism.Behaviors;
 
 namespace Prism.Ioc;
@@ -13,8 +14,8 @@ public static class BehaviorFactoryRegistrationExtensions
     /// </summary>
     /// <param name="container"></param>
     /// <param name="pageBehaviorFactory"></param>
-    /// <returns>The <see cref="IContainerRegistry"/>.</returns>
-    public static Pep.Ioc.IContainerRegistry RegisterPageBehaviorFactory(this Pep.Ioc.IContainerRegistry container, Action<Page> pageBehaviorFactory) =>
+    /// <returns>The <see cref="DryIoc.IContainer"/>.</returns>
+    public static void RegisterPageBehaviorFactory(this DryIoc.IContainer container, Action<Page> pageBehaviorFactory) =>
         container.RegisterInstance<IPageBehaviorFactory>(new DelegatePageBehaviorFactory(pageBehaviorFactory));
 
     /// <summary>
@@ -22,9 +23,9 @@ public static class BehaviorFactoryRegistrationExtensions
     /// </summary>
     /// <param name="container"></param>
     /// <param name="pageBehaviorFactory"></param>
-    /// <returns>The <see cref="IContainerRegistry"/>.</returns>
-    public static Pep.Ioc.IContainerRegistry RegisterPageBehaviorFactory(this Pep.Ioc.IContainerRegistry container, Action<Pep.Ioc.IContainerProvider, Page> pageBehaviorFactory) =>
-        container.RegisterScoped<IPageBehaviorFactory>(c => new DelegateContainerPageBehaviorFactory(pageBehaviorFactory, c));
+    /// <returns>The <see cref="DryIoc.IContainer"/>.</returns>
+    public static void RegisterPageBehaviorFactory(this DryIoc.IContainer container, Action<IResolverContext, Page> pageBehaviorFactory) =>
+        container.RegisterDelegate<IPageBehaviorFactory>(c => new DelegateContainerPageBehaviorFactory(pageBehaviorFactory, c), Reuse.Scoped);
 
     /// <summary>
     /// Adds a specified <typeparamref name="TBehavior"/> to all <see cref="Page"/>'s that are created.
@@ -32,11 +33,12 @@ public static class BehaviorFactoryRegistrationExtensions
     /// <typeparam name="TBehavior"></typeparam>
     /// <param name="container"></param>
     /// <returns></returns>
-    public static Pep.Ioc.IContainerRegistry RegisterPageBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TBehavior>(this Pep.Ioc.IContainerRegistry container)
-        where TBehavior : Behavior =>
-        container
-            .Register<TBehavior>()
-            .RegisterPageBehaviorFactory((c, p) => p.Behaviors.Add(c.Resolve<TBehavior>()));
+    public static void RegisterPageBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TBehavior>(this DryIoc.IContainer container)
+        where TBehavior : Behavior
+    {
+        container.Register<TBehavior>();
+        container.RegisterPageBehaviorFactory((c, p) => p.Behaviors.Add(c.Resolve<TBehavior>()));
+    }
 
     /// <summary>
     /// This will apply the <typeparamref name="TBehavior"/> to the <see cref="Page"/>, when it is a <typeparamref name="TPage"/>.
@@ -45,16 +47,19 @@ public static class BehaviorFactoryRegistrationExtensions
     /// <typeparam name="TBehavior">The type of Behavior</typeparam>
     /// <param name="container"></param>
     /// <returns></returns>
-    public static Pep.Ioc.IContainerRegistry RegisterPageBehavior<TPage, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TBehavior>(this Pep.Ioc.IContainerRegistry container)
+    public static void RegisterPageBehavior<TPage, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TBehavior>(this DryIoc.IContainer container)
         where TPage : Page
-        where TBehavior : Behavior =>
-        container
-            .Register<TBehavior>()
-            .RegisterPageBehaviorFactory((c, p) =>
+        where TBehavior : Behavior
+    {
+        container.Register<TBehavior>();
+        container.RegisterPageBehaviorFactory((c, p) =>
+        {
+            if (p is TPage)
             {
-                if (p is TPage)
-                    p.Behaviors.Add(c.Resolve<TBehavior>());
-            });
+                p.Behaviors.Add(c.Resolve<TBehavior>());
+            }
+        });
+    }
 
     /// <summary>
     /// Registers an <see cref="Action{Page}"/> delegate to execute on a given Page instance. This could apply a <see cref="Behavior"/>
@@ -67,14 +72,14 @@ public static class BehaviorFactoryRegistrationExtensions
         services.AddSingleton<IPageBehaviorFactory>(new DelegatePageBehaviorFactory(pageBehaviorFactory));
 
     /// <summary>
-    /// Registers an <see cref="Action{IContainerProvider,Page}"/> delegate to execute on a given Page instance. This could apply a <see cref="Behavior"/>
+    /// Registers an <see cref="Action{IResolverContext,Page}"/> delegate to execute on a given Page instance. This could apply a <see cref="Behavior"/>
     /// or it could add attached properties such Platform Specifics.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/>.</param>
     /// <param name="pageBehaviorFactory">The delegate action to perform on the <see cref="Page"/>.</param>
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
-    public static IServiceCollection RegisterPageBehaviorFactory(this IServiceCollection services, Action<Pep.Ioc.IContainerProvider, Page> pageBehaviorFactory) =>
-        services.AddScoped<IPageBehaviorFactory>(c => new DelegateContainerPageBehaviorFactory(pageBehaviorFactory, c.GetRequiredService<Pep.Ioc.IContainerProvider>()));
+    public static IServiceCollection RegisterPageBehaviorFactory(this IServiceCollection services, Action<IResolverContext, Page> pageBehaviorFactory) =>
+        services.AddScoped<IPageBehaviorFactory>(c => new DelegateContainerPageBehaviorFactory(pageBehaviorFactory, c.GetRequiredService<IResolverContext>()));
 
     /// <summary>
     /// Registers a given <see cref="Behavior"/> for all Pages.

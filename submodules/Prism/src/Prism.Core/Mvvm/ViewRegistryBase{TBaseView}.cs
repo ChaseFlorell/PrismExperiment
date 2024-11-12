@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using IContainerProvider = Pep.Ioc.IContainerProvider;
+using DryIoc;
 
 #nullable enable
 namespace Prism.Mvvm;
@@ -51,7 +51,7 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     /// <exception cref="KeyNotFoundException">Thrown if the specified view is not registered.</exception>
     /// <exception cref="ViewModelCreationException">Thrown if an error occurs while creating the view model.</exception>
     /// <exception cref="ViewCreationException">Thrown if an error occurs while creating the view.</exception>
-    public object? CreateView(IContainerProvider container, string name)
+    public object? CreateView(IResolverContext container, string name)
     {
         try
         {
@@ -190,7 +190,7 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     /// </summary>
     /// <param name="view">The created view instance.</param>
     /// <param name="container">The container used to resolve dependencies.</param>
-    protected abstract void ConfigureView(TBaseView? view, IContainerProvider container);
+    protected abstract void ConfigureView(TBaseView? view, IResolverContext container);
 
     /// <summary>
     /// Calls the platform code to Autowire the View if it does not have a ViewModel already
@@ -213,9 +213,9 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     protected abstract void SetViewModelProperty(TBaseView? view, Type viewModelType);
 
     /// <summary>
-    /// Sets the IContainerProvider making it easier to access on the given View
+    /// Sets the IResolverContext making it easier to access on the given View
     /// </summary>
     /// <param name="view"></param>
     /// <param name="container"></param>
-    protected abstract void SetContainerProvider(TBaseView? view, IContainerProvider container);
+    protected abstract void SetContainerProvider(TBaseView? view, IResolverContext container);
 }

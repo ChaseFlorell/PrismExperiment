@@ -1,5 +1,4 @@
-using IContainerProvider = Pep.Ioc.IContainerProvider;
-using IContainerRegistry = Pep.Ioc.IContainerRegistry;
+using DryIoc;
 
 namespace Prism.Modularity
 {
@@ -11,11 +10,11 @@ namespace Prism.Modularity
         /// <summary>
         /// Used to register types with the container that will be used by your application.
         /// </summary>
-        void RegisterTypes(IContainerRegistry containerRegistry);
+        void RegisterTypes(DryIoc.IContainer containerRegistry);
 
         /// <summary>
         /// Notifies the module that it has been initialized.
         /// </summary>
-        void OnInitialized(IContainerProvider containerProvider);
+        void OnInitialized(IResolverContext containerProvider);
     }
 }

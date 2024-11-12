@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using DryIoc;
 using Prism.Mvvm;
 using Prism.Navigation.Regions;
 using Prism.Navigation.Regions.Adapters;
@@ -16,9 +17,9 @@ public static class RegionNavigationRegistrationExtensions
     /// Registers a <see cref="View"/> for region navigation.
     /// </summary>
     /// <typeparam name="TView">The Type of <see cref="View"/> to register</typeparam>
-    /// <param name="containerRegistry"><see cref="IContainerRegistry"/> used to register type for Navigation.</param>
+    /// <param name="containerRegistry"><see cref="DryIoc.IContainer"/> used to register type for Navigation.</param>
     /// <param name="name">The unique name to register with the View</param>
-    public static IContainerRegistry RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView>(this IContainerRegistry containerRegistry, string name = null)
+    public static DryIoc.IContainer RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView>(this DryIoc.IContainer containerRegistry, string name = null)
         where TView : View =>
         containerRegistry.RegisterForNavigationWithViewModel(typeof(TView), null, name);
 
@@ -29,15 +30,17 @@ public static class RegionNavigationRegistrationExtensions
     /// <typeparam name="TViewModel">The ViewModel to use as the BindingContext for the View</typeparam>
     /// <param name="name">The unique name to register with the View</param>
     /// <param name="containerRegistry"></param>
-    public static IContainerRegistry RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TViewModel>(this IContainerRegistry containerRegistry, string name = null)
+    public static DryIoc.IContainer RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+        TViewModel>(this DryIoc.IContainer containerRegistry, string name = null)
         where TView : View
         where TViewModel : class =>
         containerRegistry.RegisterForNavigationWithViewModel(typeof(TView), typeof(TViewModel), name);
 
-    public static IContainerRegistry RegisterForRegionNavigation(this IContainerRegistry containerRegistry, Type viewType, Type viewModelType, string name = null)
+    public static DryIoc.IContainer RegisterForRegionNavigation(this DryIoc.IContainer containerRegistry, Type viewType, Type viewModelType, string name = null)
         => containerRegistry.RegisterForNavigationWithViewModel(viewType, viewModelType, name);
 
-    private static IContainerRegistry RegisterForNavigationWithViewModel(this IContainerRegistry containerRegistry, Type viewType, Type viewModelType, string name)
+    private static DryIoc.IContainer RegisterForNavigationWithViewModel(this DryIoc.IContainer containerRegistry, Type viewType, Type viewModelType, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             name = viewType.Name;
@@ -45,14 +48,14 @@ public static class RegionNavigationRegistrationExtensions
         if (viewModelType is not null)
             containerRegistry.Register(viewModelType);
 
-        containerRegistry.Register(viewType)
-            .RegisterInstance(new ViewRegistration
-            {
-                Name = name,
-                Type = ViewType.Region,
-                View = viewType,
-                ViewModel = viewModelType
-            });
+        containerRegistry.Register(viewType);
+        containerRegistry.RegisterInstance(new ViewRegistration
+        {
+            Name = name,
+            Type = ViewType.Region,
+            View = viewType,
+            ViewModel = viewModelType
+        });
 
         return containerRegistry;
     }
@@ -74,7 +77,9 @@ public static class RegionNavigationRegistrationExtensions
     /// <typeparam name="TViewModel">The ViewModel to use as the BindingContext for the View</typeparam>
     /// <param name="name">The unique name to register with the View</param>
     /// <param name="services"></param>
-    public static IServiceCollection RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TViewModel>(this IServiceCollection services, string name = null)
+    public static IServiceCollection RegisterForRegionNavigation<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] TView,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+        TViewModel>(this IServiceCollection services, string name = null)
         where TView : View
         where TViewModel : class =>
         services.RegisterForNavigationWithViewModel(typeof(TView), typeof(TViewModel), name);
@@ -102,10 +107,10 @@ public static class RegionNavigationRegistrationExtensions
         return services;
     }
 
-    internal static IContainerRegistry RegisterRegionServices(this IContainerRegistry containerRegistry, Action<RegionAdapterMappings> configureAdapters = null, Action<IRegionBehaviorFactory> configureBehaviors = null)
+    internal static DryIoc.IContainer RegisterRegionServices(this DryIoc.IContainer containerRegistry, Action<RegionAdapterMappings> configureAdapters = null, Action<IRegionBehaviorFactory> configureBehaviors = null)
     {
-        containerRegistry.TryRegister<IRegionNavigationRegistry, RegionNavigationRegistry>();
-        containerRegistry.RegisterSingleton<RegionAdapterMappings>(p =>
+        containerRegistry.Register<IRegionNavigationRegistry, RegionNavigationRegistry>();
+        containerRegistry.RegisterDelegate<RegionAdapterMappings>(p =>
         {
             var regionAdapterMappings = new RegionAdapterMappings();
             configureAdapters?.Invoke(regionAdapterMappings);
@@ -119,13 +124,13 @@ public static class RegionNavigationRegistrationExtensions
             regionAdapterMappings.RegisterDefaultMapping<ScrollView, ScrollViewRegionAdapter>();
             regionAdapterMappings.RegisterDefaultMapping<ContentView, ContentViewRegionAdapter>();
             return regionAdapterMappings;
-        });
+        }, reuse: Reuse.Singleton);
 
-        containerRegistry.TryRegisterSingleton<IRegionManager, RegionManager>();
-        containerRegistry.TryRegisterSingleton<IRegionNavigationContentLoader, RegionNavigationContentLoader>();
-        containerRegistry.TryRegisterSingleton<IRegionViewRegistry, RegionViewRegistry>();
-        containerRegistry.TryRegister<RegionBehaviorFactory>();
-        containerRegistry.RegisterSingleton<IRegionBehaviorFactory>(p =>
+        containerRegistry.Register<IRegionManager, RegionManager>(Reuse.Singleton);
+        containerRegistry.Register<IRegionNavigationContentLoader, RegionNavigationContentLoader>(Reuse.Singleton);
+        containerRegistry.Register<IRegionViewRegistry, RegionViewRegistry>(Reuse.Singleton);
+        containerRegistry.Register<RegionBehaviorFactory>();
+        containerRegistry.RegisterDelegate<IRegionBehaviorFactory>(p =>
         {
             var regionBehaviors = p.Resolve<RegionBehaviorFactory>();
             regionBehaviors.AddIfMissing<BindRegionContextToVisualElementBehavior>(BindRegionContextToVisualElementBehavior.BehaviorKey);
@@ -138,11 +143,12 @@ public static class RegionNavigationRegistrationExtensions
             regionBehaviors.AddIfMissing<DestructibleRegionBehavior>(DestructibleRegionBehavior.BehaviorKey);
             configureBehaviors?.Invoke(regionBehaviors);
             return regionBehaviors;
-        });
-        containerRegistry.TryRegister<IRegionNavigationJournalEntry, RegionNavigationJournalEntry>();
-        containerRegistry.TryRegister<IRegionNavigationJournal, RegionNavigationJournal>();
-        containerRegistry.TryRegister<IRegionNavigationService, RegionNavigationService>();
+        }, reuse: Reuse.Singleton);
+        containerRegistry.Register<IRegionNavigationJournalEntry, RegionNavigationJournalEntry>();
+        containerRegistry.Register<IRegionNavigationJournal, RegionNavigationJournal>();
+        containerRegistry.Register<IRegionNavigationService, RegionNavigationService>();
         //containerRegistry.RegisterManySingleton<RegionResolverOverrides>(typeof(IResolverOverridesHelper), typeof(IActiveRegionHelper));
-        return containerRegistry.TryRegisterSingleton<IRegionManager, RegionManager>();
+        containerRegistry.Register<IRegionManager, RegionManager>(Reuse.Singleton);
+        return containerRegistry;
     }
 }
