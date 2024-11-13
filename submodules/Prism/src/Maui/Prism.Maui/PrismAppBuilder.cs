@@ -303,12 +303,9 @@ internal class PepServiceProviderFactory : IServiceProviderFactory<IContainer>
     /// <inheritdoc />
     public IContainer CreateBuilder(IServiceCollection services)
     {
-        return TODO_IMPLEMENT_ME;
+       services.
     }
 
     /// <inheritdoc />
-    public IServiceProvider CreateServiceProvider(IContainer containerBuilder)
-    {
-        return TODO_IMPLEMENT_ME;
-    }
+    public IServiceProvider CreateServiceProvider(IContainer container) => container.BuildServiceProvider();
 }
