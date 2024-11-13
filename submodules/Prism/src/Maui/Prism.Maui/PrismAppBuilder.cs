@@ -297,15 +297,18 @@ internal class PepServiceProviderFactory : IServiceProviderFactory<IContainer>
 {
     public PepServiceProviderFactory(Action<IContainer> registrationCallback, IContainer container)
     {
-       
+        _container = container;
+        registrationCallback.Invoke(container);
     }
 
     /// <inheritdoc />
     public IContainer CreateBuilder(IServiceCollection services)
     {
-       services.
+       services.Popu
     }
 
     /// <inheritdoc />
     public IServiceProvider CreateServiceProvider(IContainer container) => container.BuildServiceProvider();
+
+    private readonly IContainer _container;
 }
