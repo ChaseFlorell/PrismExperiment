@@ -1,6 +1,5 @@
 ﻿using DryIoc;
 using Microsoft.Maui.LifecycleEvents;
-using Pep.Ioc;
 using Prism;
 using Prism.Controls;
 using Prism.Mvvm;
@@ -42,13 +41,8 @@ public static class MauiProgram
         containerRegistry.RegisterForNavigation<BravoWorkflow, BravoWorkflowViewModel>(NavigationUrl.Bravo);
         containerRegistry.RegisterForNavigation<AlphaLeaf, AlphaLeafViewModel>(NavigationUrl.AlphaLeaf);
         containerRegistry.RegisterForNavigation<BravoLeaf, BravoLeafViewModel>(NavigationUrl.BravoLeaf);
-        containerRegistry.RegisterDelegate(() => new PrismNavigationPage());
-        containerRegistry.RegisterInstance(new ViewRegistration
-        {
-            Name = nameof(NavigationPage),
-            View = typeof(PrismNavigationPage),
-            Type = ViewType.Page
-        });
+        containerRegistry.RegisterForNavigation<NavigationPage>(() => new PrismNavigationPage());
+
         // << Navigation
         containerRegistry
             .Register<object>(

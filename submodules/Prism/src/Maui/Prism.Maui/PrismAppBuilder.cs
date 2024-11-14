@@ -24,7 +24,6 @@ namespace Prism;
 /// </summary>
 public sealed class PrismAppBuilder
 {
-    private readonly List<Action<IContainer>> _registrations;
     private readonly List<Action<IResolverContext>> _initializations;
     private readonly IContainer _container;
     private Func<IResolverContext, INavigationService, Task> _createWindow;
@@ -37,7 +36,6 @@ public sealed class PrismAppBuilder
         ArgumentNullException.ThrowIfNull(builder);
 
         _container = container;
-        _registrations = [];
         _initializations = [];
 
         ViewModelCreationException.SetViewNameDelegate(view =>
@@ -52,7 +50,8 @@ public sealed class PrismAppBuilder
         // This is primarily to help with Unit Tests
         IDialogContainer.DialogStack.Clear();
         MauiBuilder = builder;
-        MauiBuilder.ConfigureContainer(new PepServiceProviderFactory(RegistrationCallback, container));
+        RegistrationCallback(container);
+        MauiBuilder.ConfigureContainer(new PepServiceProviderFactory(container));
 
         //ContainerLocator.ResetContainer();
         //ContainerLocator.SetContainerExtension(containerExtension);
@@ -88,9 +87,9 @@ public sealed class PrismAppBuilder
             if (view is not BindableObject bindable || bindable.BindingContext is not null)
                 return null;
 
-            var container = bindable.GetContainerProvider();
+            var resolverContext = bindable.GetResolverContext();
 
-            return container.Resolve(viewModelType, (typeof(IDispatcher), bindable.Dispatcher));
+            return resolverContext.Resolve(viewModelType, (typeof(IDispatcher), bindable.Dispatcher));
         }
         catch (ViewModelCreationException)
         {
@@ -107,9 +106,9 @@ public sealed class PrismAppBuilder
     /// </summary>
     /// <param name="registerTypes">The delegate to register your services.</param>
     /// <returns>The <see cref="PrismAppBuilder"/>.</returns>
-    public PrismAppBuilder RegisterTypes(System.Action<IContainer> registerTypes)
+    public PrismAppBuilder RegisterTypes(Action<IContainer> registerTypes)
     {
-        _registrations.Add(registerTypes);
+        registerTypes(_container);
         return this;
     }
 
@@ -125,6 +124,7 @@ public sealed class PrismAppBuilder
     }
 
     private bool _initialized;
+    private IResolverContext _rootScope;
 
     internal void OnInitialized()
     {
@@ -207,7 +207,8 @@ public sealed class PrismAppBuilder
 
         // Ensure that this is executed before we navigate.
         OnInitialized();
-        var onStart = _createWindow(_container, _container.Resolve<INavigationService>());
+        _rootScope = _container.OpenScope("root");
+        var onStart = _createWindow(_rootScope, _rootScope.Resolve<INavigationService>());
         onStart.Wait();
     }
 
@@ -233,19 +234,14 @@ public sealed class PrismAppBuilder
             if (view is not BindableObject bindable)
                 return null;
 
-            var container = bindable.GetContainerProvider();
+            var container = bindable.GetResolverContext();
             return viewModelFactory(container, view, type);
         });
 
         return this;
     }
 
-    private void RegistrationCallback(IContainer container)
-    {
-        RegisterDefaultRequiredTypes(container);
-
-        _registrations.ForEach(action => action(container));
-    }
+    private void RegistrationCallback(IContainer container) => RegisterDefaultRequiredTypes(container);
 
     /// <summary>
     /// Configures <see cref="RegionAdapterMappings"/> for Region Navigation with the <see cref="IRegionManager"/>.
@@ -269,7 +265,7 @@ public sealed class PrismAppBuilder
         return this;
     }
 
-    private void RegisterDefaultRequiredTypes(DryIoc.IContainer containerRegistry)
+    private void RegisterDefaultRequiredTypes(IContainer containerRegistry)
     {
         containerRegistry.Register<IServiceScopeFactory, DryIocServiceScopeFactory>(Reuse.Singleton);
         containerRegistry.Register<IEventAggregator, EventAggregator>(Reuse.Singleton);
@@ -293,22 +289,16 @@ public sealed class PrismAppBuilder
     }
 }
 
-internal class PepServiceProviderFactory : IServiceProviderFactory<IContainer>
+internal class PepServiceProviderFactory(IContainer container)
+    : IServiceProviderFactory<IContainer>
 {
-    public PepServiceProviderFactory(Action<IContainer> registrationCallback, IContainer container)
-    {
-        _container = container;
-        registrationCallback.Invoke(container);
-    }
-
     /// <inheritdoc />
     public IContainer CreateBuilder(IServiceCollection services)
     {
-       services.Popu
+        container.Populate(services);
+        return container;
     }
 
     /// <inheritdoc />
-    public IServiceProvider CreateServiceProvider(IContainer container) => container.BuildServiceProvider();
-
-    private readonly IContainer _container;
+    public IServiceProvider CreateServiceProvider(IContainer c) => c.BuildServiceProvider();
 }

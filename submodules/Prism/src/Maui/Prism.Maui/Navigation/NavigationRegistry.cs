@@ -14,9 +14,9 @@ internal class NavigationRegistry : ViewRegistryBase, INavigationRegistry
     {
     }
 
-    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
+    protected override void ConfigureView(BindableObject bindable, IResolverContext resolverContext)
     {
-        ConfigurePage(container, bindable as Page);
+        ConfigurePage(resolverContext, bindable as Page);
     }
 
     private static void ConfigurePage(IResolverContext container, Page page)
@@ -47,8 +47,8 @@ internal class NavigationRegistry : ViewRegistryBase, INavigationRegistry
             }
         }
 
-        if (page.GetContainerProvider() is null)
-            page.SetContainerProvider(container);
+        if (page.GetResolverContext() is null)
+            page.SetResolverContext(container);
 
         var accessor = container.Resolve<IPageAccessor>();
         if (accessor.Page is not null && accessor.Page != page)

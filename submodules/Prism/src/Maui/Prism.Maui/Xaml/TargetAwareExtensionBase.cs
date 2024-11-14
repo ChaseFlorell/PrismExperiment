@@ -37,7 +37,7 @@ public abstract class TargetAwareExtensionBase<T> : BindableObject, IMarkupExten
         }
     }
 
-    protected IResolverContext Container => TargetElement.GetContainerProvider();
+    protected IResolverContext Container => TargetElement.GetResolverContext();
 
     /// <summary>
     /// Sets the Target BindingContext strategy
@@ -78,7 +78,7 @@ public abstract class TargetAwareExtensionBase<T> : BindableObject, IMarkupExten
         if (Page is null)
             return null;
 
-        var loggerFactory = Page.GetContainerProvider().Resolve<ILoggerFactory>();
+        var loggerFactory = Page.GetResolverContext().Resolve<ILoggerFactory>();
         return loggerFactory.CreateLogger(GetType().Name);
     }
 

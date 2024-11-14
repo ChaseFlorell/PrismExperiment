@@ -42,6 +42,7 @@ public static class MicrosoftDependencyInjectionExtensions
         if (viewModel != null)
             services.AddTransient(viewModel);
 
+        ViewModelLocationProvider.Register(name, viewModel);
         return services;
     }
 #endif

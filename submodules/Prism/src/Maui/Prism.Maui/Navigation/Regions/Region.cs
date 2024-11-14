@@ -213,7 +213,7 @@ public class Region : BindableBase, IRegion, ITargetAwareRegion
 
     public IRegionManager Add(string viewName)
     {
-        var container = TargetElement.GetContainerProvider();
+        var container = TargetElement.GetResolverContext();
         var registry = container.Resolve<IRegionNavigationRegistry>();
         var view = registry.CreateView(container, viewName) as VisualElement;
         return Add(view, viewName);

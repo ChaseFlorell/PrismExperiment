@@ -45,22 +45,22 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     /// <summary>
     /// Creates an instance of the specified view using the provided container.
     /// </summary>
-    /// <param name="container">The container used to resolve dependencies.</param>
+    /// <param name="resolverContext">The container used to resolve dependencies.</param>
     /// <param name="name">The name of the view to create.</param>
     /// <returns>An instance of the created view.</returns>
     /// <exception cref="KeyNotFoundException">Thrown if the specified view is not registered.</exception>
     /// <exception cref="ViewModelCreationException">Thrown if an error occurs while creating the view model.</exception>
     /// <exception cref="ViewCreationException">Thrown if an error occurs while creating the view.</exception>
-    public object? CreateView(IResolverContext container, string name)
+    public object? CreateView(IResolverContext resolverContext, string name)
     {
         try
         {
             var registration = GetRegistration(name) ?? throw new KeyNotFoundException($"No view with the name '{name}' has been registered");
-            var view = container.Resolve(registration.View) as TBaseView;
+            var view = resolverContext.Resolve(registration.View) as TBaseView;
             SetNavigationNameProperty(view, registration.Name);
 
-            SetContainerProvider(view, container);
-            ConfigureView(view, container);
+            SetContainerProvider(view, resolverContext);
+            ConfigureView(view, resolverContext);
 
             if (registration.ViewModel is not null)
                 SetViewModelProperty(view, registration.ViewModel);
@@ -189,8 +189,8 @@ public abstract class ViewRegistryBase<TBaseView> : IViewRegistry
     /// Allows subclasses to perform custom configuration on the created view instance.
     /// </summary>
     /// <param name="view">The created view instance.</param>
-    /// <param name="container">The container used to resolve dependencies.</param>
-    protected abstract void ConfigureView(TBaseView? view, IResolverContext container);
+    /// <param name="resolverContext">The container used to resolve dependencies.</param>
+    protected abstract void ConfigureView(TBaseView? view, IResolverContext resolverContext);
 
     /// <summary>
     /// Calls the platform code to Autowire the View if it does not have a ViewModel already

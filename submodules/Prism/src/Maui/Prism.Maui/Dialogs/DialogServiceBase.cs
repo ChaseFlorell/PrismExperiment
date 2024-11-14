@@ -24,7 +24,7 @@ public abstract class DialogServiceBase : IDialogService
 
             var currentPage = GetCurrentPage();
             ArgumentNullException.ThrowIfNull(currentPage);
-            var container = currentPage.GetContainerProvider();
+            var container = currentPage.GetResolverContext();
             // This needs to be resolved when called as a Module could load any time
             // and register new dialogs
             var registry = container.Resolve<IDialogViewRegistry>();

@@ -128,8 +128,8 @@ public class DelayedRegionCreationBehavior
                 throw new Exception("The Target Element has not yet been parented and we cannot get the parent page.");
 
             // Build the region
-            var container = page.GetContainerProvider();
-            targetElement.SetContainerProvider(container);
+            var container = page.GetResolverContext();
+            targetElement.SetResolverContext(container);
             var regionAdapter = _regionAdapterMappings.GetMapping(targetElement.GetType());
             var region = regionAdapter.Initialize(targetElement, regionName);
 

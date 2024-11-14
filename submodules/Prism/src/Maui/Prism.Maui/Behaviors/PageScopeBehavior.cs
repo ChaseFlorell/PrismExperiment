@@ -20,6 +20,6 @@ public sealed class PageScopeBehavior : BehaviorBase<Page>
     {
         base.OnDetachingFrom(page);
         // This forces the Attached Property to get cleaned up.
-        page.SetContainerProvider(null);
+        page.SetResolverContext(null);
     }
 }

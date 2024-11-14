@@ -28,7 +28,7 @@ public static class IWindowManagerExtensions
     public static IDialogService GetCurrentDialogService(this IWindowManager windowManager)
     {
         var page = windowManager.GetCurrentPage();
-        var container = page.GetContainerProvider();
+        var container = page.GetResolverContext();
         return container.Resolve<IDialogService>();
     }
 

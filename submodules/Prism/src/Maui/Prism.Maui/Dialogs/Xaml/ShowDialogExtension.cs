@@ -40,7 +40,7 @@ public class ShowDialogExtension : TargetAwareExtensionBase<ICommand>, ICommand
         try
         {
             var parameters = parameter.ToDialogParameters(TargetElement);
-            var dialogService = Page.GetContainerProvider().Resolve<IDialogService>();
+            var dialogService = Page.GetResolverContext().Resolve<IDialogService>();
             dialogService.ShowDialog(Name, parameters, DialogClosedCallback);
         }
         catch (Exception ex)

@@ -9,5 +9,5 @@ public interface ITargetAwareRegion : IRegion
 {
     VisualElement TargetElement { get; set; }
 
-    IResolverContext Container => TargetElement.GetContainerProvider();
+    IResolverContext Container => TargetElement.GetResolverContext();
 }

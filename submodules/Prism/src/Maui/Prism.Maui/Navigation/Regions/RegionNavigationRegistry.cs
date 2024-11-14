@@ -10,7 +10,7 @@ internal class RegionNavigationRegistry : ViewRegistryBase, IRegionNavigationReg
     {
     }
 
-    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
+    protected override void ConfigureView(BindableObject bindable, IResolverContext resolverContext)
     {
     }
 }

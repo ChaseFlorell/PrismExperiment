@@ -21,8 +21,8 @@ public class DialogViewRegistry : ViewRegistryBase, IDialogViewRegistry
     /// Configures a dialog view with the specified context and container provider.
     /// </summary>
     /// <param name="bindable">The bindable object representing the dialog view to configure.</param>
-    /// <param name="container">The container provider to use for resolving dependencies.</param>
-    protected override void ConfigureView(BindableObject bindable, IResolverContext container)
+    /// <param name="resolverContext">The container provider to use for resolving dependencies.</param>
+    protected override void ConfigureView(BindableObject bindable, IResolverContext resolverContext)
     {
     }
 }

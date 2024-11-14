@@ -22,7 +22,7 @@ public class PageNavigationService : INavigationService, IRegistryAware
 
     internal static PageNavigationSource NavigationSource { get; set; } = PageNavigationSource.Device;
 
-    private readonly IResolverContext _container;
+    private readonly IResolverContext _resolverContext;
     protected readonly IWindowManager _windowManager;
     protected readonly IPageAccessor _pageAccessor;
     protected readonly IEventAggregator _eventAggregator;
@@ -50,21 +50,21 @@ public class PageNavigationService : INavigationService, IRegistryAware
     /// <summary>
     /// Gets the <see cref="IViewRegistry"/>
     /// </summary>
-    public IViewRegistry Registry => _container.Resolve<INavigationRegistry>();
+    public IViewRegistry Registry => _resolverContext.Resolve<INavigationRegistry>();
 
     /// <summary>
     /// Constructs a new instance of the <see cref="PageNavigationService"/>.
     /// </summary>
-    /// <param name="container">The <see cref="IResolverContext"/> that will be used to resolve pages for navigation.</param>
+    /// <param name="resolverContext">The <see cref="IResolverContext"/> that will be used to resolve pages for navigation.</param>
     /// <param name="windowManager">The <see cref="IWindowManager"/> that will let the NavigationService retrieve, open or close the app Windows.</param>
     /// <param name="eventAggregator">The <see cref="IEventAggregator"/> that will raise <see cref="NavigationRequestEvent"/>.</param>
     /// <param name="pageAccessor">The <see cref="IPageAccessor"/> that will let the NavigationService retrieve the <see cref="Page"/> for the current scope.</param>q
-    public PageNavigationService(IResolverContext container,
+    public PageNavigationService(IResolverContext resolverContext,
         IWindowManager windowManager,
         IEventAggregator eventAggregator,
         IPageAccessor pageAccessor)
     {
-        _container = container;
+        _resolverContext = resolverContext;
         _windowManager = windowManager;
         _eventAggregator = eventAggregator;
         _pageAccessor = pageAccessor;
@@ -867,7 +867,7 @@ public class PageNavigationService : INavigationService, IRegistryAware
     {
         try
         {
-            foreach (var navigationRegistry in _container.Resolve<IEnumerable<INavigationRegistry>>())
+            foreach (var navigationRegistry in _resolverContext.Resolve<IEnumerable<INavigationRegistry>>())
             {
                 foreach (var viewRegistration in navigationRegistry.Registrations)
                 {
@@ -875,7 +875,7 @@ public class PageNavigationService : INavigationService, IRegistryAware
                 }
             }
 
-            var scope = _container.OpenScope(segmentName);
+            var scope = _resolverContext.OpenScope(segmentName);
             var page = (Page)Registry.CreateView(scope, segmentName);
 
             if (page is null)

@@ -17,10 +17,10 @@ public interface IViewRegistry
     /// <summary>
     /// Creates a view given a specified instance of the Container and a navigation name
     /// </summary>
-    /// <param name="container"></param>
+    /// <param name="resolverContext"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    object CreateView(IResolverContext container, string name);
+    object CreateView(IResolverContext resolverContext, string name);
 
     /// <summary>
     /// Gets the ViewType for a specified navigation name

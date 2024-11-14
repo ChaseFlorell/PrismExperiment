@@ -17,12 +17,12 @@ internal class ElementParentedCallbackBehavior : Behavior<VisualElement>
     {
         if (view.TryGetParentPage(out var page))
         {
-            var container = page.GetContainerProvider();
+            var container = page.GetResolverContext();
             if (container is null)
                 page.PropertyChanged += PagePropertyChanged;
             else
             {
-                view.SetContainerProvider(container);
+                view.SetResolverContext(container);
                 _callback();
             }
         }
@@ -38,7 +38,7 @@ internal class ElementParentedCallbackBehavior : Behavior<VisualElement>
             return;
         else if (view.TryGetParentPage(out var page))
         {
-            if(page.GetContainerProvider() is not null)
+            if(page.GetResolverContext() is not null)
             {
                 view.ParentChanged -= OnParentChanged;
                 _callback();
@@ -57,7 +57,7 @@ internal class ElementParentedCallbackBehavior : Behavior<VisualElement>
         if (sender is not Page page || e.PropertyName != Navigation.Xaml.Navigation.PrismContainerProvider)
             return;
 
-        var container = page.GetContainerProvider();
+        var container = page.GetResolverContext();
 
         if(container is not null)
         {

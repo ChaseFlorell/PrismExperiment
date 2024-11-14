@@ -33,13 +33,13 @@ public static class Navigation
             return;
         }
 
-        if (oldValue != null && newValue is null && oldValue is IScopedProvider oldProvider)
+        if (oldValue != null && newValue is null && oldValue is IResolverContext oldProvider)
         {
             oldProvider.Dispose();
             return;
         }
 
-        if (newValue != null && newValue is IScopedProvider scopedProvider)
+        if (newValue != null && newValue is IResolverContext scopedProvider)
         {
             var accessor = scopedProvider.Resolve<IPageAccessor>();
             if (accessor.Page is null)
@@ -47,7 +47,7 @@ public static class Navigation
             else if (accessor.Page != page)
                 throw new InvalidOperationException($"The Scoped Provider has already been assigned to another page. Expected: '{page.GetType().FullName}' - Found: '{accessor.Page.GetType().FullName}'.");
 
-            scopedProvider.IsAttached = true;
+            // scopedProvider.IsAttached = true;
         }
     }
 
@@ -120,7 +120,7 @@ public static class Navigation
     {
         ArgumentNullException.ThrowIfNull(page);
 
-        var container = page.GetContainerProvider();
+        var container = page.GetResolverContext();
         return container.Resolve<INavigationService>();
     }
 
@@ -128,11 +128,11 @@ public static class Navigation
     /// Sets the <see cref="IResolverContext"/> for the given <see cref="BindableObject"/>
     /// </summary>
     /// <param name="bindable">The <see cref="BindableObject"/>.</param>
-    /// <param name="container">The <see cref="IResolverContext"/>.</param>
+    /// <param name="resolverContext">The <see cref="IResolverContext"/>.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void SetContainerProvider(this BindableObject bindable, IResolverContext container)
+    public static void SetResolverContext(this BindableObject bindable, IResolverContext resolverContext)
     {
-        bindable.SetValue(NavigationScopeProperty, container);
+        bindable.SetValue(NavigationScopeProperty, resolverContext);
     }
 
     /// <summary>
@@ -144,30 +144,36 @@ public static class Navigation
     /// Will initialize a new Container Scope if the <see cref="Mvvm.ViewModelLocatorBehavior"/> is Forced.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IResolverContext GetContainerProvider(this BindableObject bindable)
+    public static IResolverContext GetResolverContext(this BindableObject bindable)
     {
         if (bindable is null)
             return null;
 
-        var container = bindable.GetValue(NavigationScopeProperty) as IResolverContext;
-        if (container is not null)
-            return container;
-        else if (bindable is Page page)
+        if (bindable.GetValue(NavigationScopeProperty) is IResolverContext resolverContext)
         {
-            if (page.Parent is FlyoutPage flyout && flyout.Flyout == page)
-                return flyout.GetContainerProvider();
+            return resolverContext;
+        }
 
-            if (Mvvm.ViewModelLocator.GetAutowireViewModel(page) == Mvvm.ViewModelLocatorBehavior.Forced)
+        switch (bindable)
+        {
+            case Page { Parent: FlyoutPage flyout } page when flyout.Flyout == page:
             {
-                container = null; throw new ContainerLocatorMisuseException(); // ContainerLocator.Container.CreateScope();
-                var accessor = container.Resolve<IPageAccessor>();
+                return flyout.GetResolverContext();
+            }
+            case Page page when Mvvm.ViewModelLocator.GetAutowireViewModel(page) == Mvvm.ViewModelLocatorBehavior.Forced:
+            {
+                throw new ContainerLocatorMisuseException();
+                resolverContext = null;  // ContainerLocator.Container.CreateScope();
+                var accessor = resolverContext.Resolve<IPageAccessor>();
                 accessor.Page = page;
-                SetContainerProvider(page, container);
-                return container;
+                SetResolverContext(page, resolverContext);
+                return resolverContext;
+            }
+            case Element { Parent: not null } element:
+            {
+                return GetResolverContext(element.Parent);
             }
         }
-        else if (bindable is Element element && element.Parent is not null)
-            return GetContainerProvider(element.Parent);
 
         return null;
     }

@@ -28,7 +28,7 @@ public abstract class ViewRegistryBase : ViewRegistryBase<BindableObject>
 
     protected override void SetContainerProvider(BindableObject view, IResolverContext container)
     {
-        view.SetContainerProvider(container);
+        view.SetResolverContext(container);
     }
 
     protected override void SetNavigationNameProperty(BindableObject view, string name)

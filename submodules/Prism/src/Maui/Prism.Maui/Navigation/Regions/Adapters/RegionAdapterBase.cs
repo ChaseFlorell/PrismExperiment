@@ -36,7 +36,7 @@ public abstract class RegionAdapterBase<T> : IRegionAdapter where T : VisualElem
     public IRegion Initialize(T regionTarget, string regionName)
     {
         var page = regionTarget.GetParentPage();
-        var container = regionTarget.GetContainerProvider();
+        var container = regionTarget.GetResolverContext();
         IRegion region = CreateRegion(container);
         region.Name = regionName ?? throw new ArgumentNullException(nameof(regionName));
         if (region is ITargetAwareRegion taRegion)
