@@ -72,4 +72,11 @@
 	  <ProjectReference Include="..\src\Maui\Prism.DryIoc.Maui\Prism.DryIoc.Maui.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiPlatformSpecificFolder Remove="Platforms\Android\" />
+	  <MauiPlatformSpecificFolder Remove="Platforms\MacCatalyst\" />
+	  <MauiPlatformSpecificFolder Remove="Platforms\Tizen\" />
+	  <MauiPlatformSpecificFolder Remove="Platforms\Windows\" />
+	</ItemGroup>
+
 </Project>
