@@ -1,5 +1,4 @@
 ﻿using DryIoc;
-using Pep.Ioc;
 using Prism.Properties;
 
 namespace Prism.Navigation.Regions;

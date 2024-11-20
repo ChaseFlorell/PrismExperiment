@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pep.Ioc;
 
 namespace Prism.Navigation.Regions
 {

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Pep.Ioc;
 using Prism.Properties;
 
 namespace Prism.Navigation.Regions.Adapters;

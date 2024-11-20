@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using DryIoc;
-using Pep.Ioc;
 using Prism.Common;
 using Prism.Navigation.Internals;
 

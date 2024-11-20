@@ -3,7 +3,6 @@ using DryIoc;
 using Prism.Common;
 using Prism.Mvvm;
 using Prism.Properties;
-using ContainerResolutionException = Pep.Ioc.ContainerResolutionException;
 
 namespace Prism.Navigation.Regions.Navigation;
 

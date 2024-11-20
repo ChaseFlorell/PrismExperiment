@@ -1,6 +1,4 @@
-﻿using Pep.Ioc;
-
-namespace Prism.Navigation.Regions;
+﻿namespace Prism.Navigation.Regions;
 
 internal class DefaultRegionManagerAccessor : IRegionManagerAccessor
 {

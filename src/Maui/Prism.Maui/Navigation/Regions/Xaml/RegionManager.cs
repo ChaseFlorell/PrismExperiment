@@ -2,7 +2,6 @@
 using System.Reflection;
 using Prism.Common;
 using Prism.Events;
-using Pep.Ioc;
 using Prism.Navigation.Regions.Adapters;
 using Prism.Properties;
 

@@ -35,7 +35,6 @@ Prism for .NET MAUI helps you more easily design and build rich, flexible, and e
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Pep.Ioc\Pep.Ioc.csproj" />
     <ProjectReference Include="..\..\Prism.Core\Prism.Core.csproj" />
   </ItemGroup>
 

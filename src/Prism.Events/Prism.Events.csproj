@@ -13,8 +13,4 @@
     <EmbeddedResource Update="Properties\Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pep.Ioc\Pep.Ioc.csproj" />
-  </ItemGroup>
-
 </Project>

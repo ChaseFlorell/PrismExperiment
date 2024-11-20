@@ -1,6 +1,4 @@
 #nullable enable
-using Pep.Ioc;
-
 namespace Prism.IoC;
 
 /// <summary>
