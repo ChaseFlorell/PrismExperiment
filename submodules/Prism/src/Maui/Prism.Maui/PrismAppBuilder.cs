@@ -89,7 +89,7 @@ public sealed class PrismAppBuilder
 
             var resolverContext = bindable.GetResolverContext();
 
-            return resolverContext.Resolve(viewModelType, (typeof(IDispatcher), bindable.Dispatcher));
+            return resolverContext.Resolve(viewModelType/*, (typeof(IDispatcher), bindable.Dispatcher)*/);
         }
         catch (ViewModelCreationException)
         {
@@ -267,7 +267,7 @@ public sealed class PrismAppBuilder
 
     private void RegisterDefaultRequiredTypes(IContainer containerRegistry)
     {
-        containerRegistry.Register<IServiceScopeFactory, DryIocServiceScopeFactory>(Reuse.Singleton);
+        containerRegistry.Register<IServiceScopeFactory, DryIocServiceScopeFactory>();
         containerRegistry.Register<IEventAggregator, EventAggregator>(Reuse.Singleton);
         containerRegistry.Register<IKeyboardMapper, KeyboardMapper>(Reuse.Singleton);
         containerRegistry.Register<IPageDialogService, PageDialogService>(Reuse.Singleton);

@@ -58,8 +58,8 @@ public static class LoggingDecorator
     public static T1 Decorate<T1, T2>(T1 service, T2 resolverContext)
     {
         var serviceType = typeof(T1).Name;
-        var implementationType = service?.GetType() ?? throw new ArgumentException("Service cannot be null", nameof(service));
-        Console.WriteLine($"Created: [ServiceType: {serviceType} Concretion: {implementationType.Name}, Hash: {service.GetHashCode()}, Scope: {resolverContext}]");
+        var implementationType = service?.GetType() ;//?? throw new ArgumentException("Service cannot be null", nameof(service));
+        Console.WriteLine($"Created: [ServiceType: {serviceType} Concretion: {implementationType?.Name}, Hash: {service?.GetHashCode()}, Scope: {resolverContext}]");
         return service;
     }
 }
