@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Prism.DryIoc.Maui</PackageId>
+    <Version>9.0.0</Version>
+    <Authors>PepsiCo</Authors>
+    <Company>PepsiCo</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <UseMaui>true</UseMaui>
     <ImplicitUsings>true</ImplicitUsings>

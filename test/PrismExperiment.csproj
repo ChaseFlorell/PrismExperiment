@@ -69,33 +69,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Remove="AppShell.xaml" />
-	  <MauiXaml Update="Pages\Alpha\AlphaWorkflow.xaml">
-	    <SubType>Designer</SubType>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\Bravo\BravoWorkflow.xaml">
-	    <SubType>Designer</SubType>
-	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="AppShell.xaml.cs" />
-	  <Compile Update="Pages\Alpha\AlphaWorkflow.xaml.cs">
-	    <DependentUpon>AlphaWorkflow.xaml</DependentUpon>
-	    <SubType>Code</SubType>
-	  </Compile>
-	  <Compile Update="Pages\Bravo\BravoWorkflow.xaml.cs">
-	    <DependentUpon>BetaWorkflow.xaml</DependentUpon>
-	    <SubType>Code</SubType>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <AdditionalFiles Include="Pages\Alpha\Leaf\AlphaLeaf.xaml" />
-	  <AdditionalFiles Include="Pages\Alpha\Leaf\BravoLeaf.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\src\Maui\Prism.DryIoc.Maui\Prism.DryIoc.Maui.csproj" />
 	</ItemGroup>
 
