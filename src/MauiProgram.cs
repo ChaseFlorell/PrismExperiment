@@ -2,7 +2,6 @@
 using Microsoft.Maui.LifecycleEvents;
 using Prism;
 using Prism.Controls;
-using Prism.Mvvm;
 using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;

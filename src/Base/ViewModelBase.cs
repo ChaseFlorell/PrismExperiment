@@ -15,6 +15,7 @@ public abstract class ViewModelBase : IInitializeAsync
     public string ScopeName => _resolverContext.CurrentScope?.Name?.ToString() ?? "<No Scope Name>";
     public string ParentScopeName => _resolverContext.Parent?.CurrentScope?.Name?.ToString() ?? "<No Parent Scope Name>";
     public string InstanceId => _dummyDependency.InstanceId;
+    public string DependencyScope => _dummyDependency.ScopeName;
 
     protected virtual Task InitializeAsync(INavigationParameters parameters) => Task.CompletedTask;
 
