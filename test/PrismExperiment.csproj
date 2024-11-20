@@ -96,7 +96,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\submodules\Prism\src\Maui\Prism.DryIoc.Maui\Prism.DryIoc.Maui.csproj" />
+	  <ProjectReference Include="..\src\Maui\Prism.DryIoc.Maui\Prism.DryIoc.Maui.csproj" />
 	</ItemGroup>
 
 </Project>

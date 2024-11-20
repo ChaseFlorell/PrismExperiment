@@ -12,12 +12,7 @@ Prism for .NET MAUI helps you more easily design and build rich, flexible, and e
     <UseMaui>true</UseMaui>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Pep.Ioc\Pep.Ioc.csproj" />
-    <ProjectReference Include="..\..\Prism.Core\Prism.Core.csproj" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.91" />
   </ItemGroup>
@@ -37,6 +32,11 @@ Prism for .NET MAUI helps you more easily design and build rich, flexible, and e
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Pep.Ioc\Pep.Ioc.csproj" />
+    <ProjectReference Include="..\..\Prism.Core\Prism.Core.csproj" />
   </ItemGroup>
 
 </Project>

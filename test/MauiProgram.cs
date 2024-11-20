@@ -1,7 +1,13 @@
-﻿using DryIoc;
+﻿using System;
+using DryIoc;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 using Prism;
 using Prism.Controls;
+using Prism.Ioc;
 using Prism.Navigation;
 using PrismExperiment.Dependencies;
 using PrismExperiment.Pages.Alpha;
